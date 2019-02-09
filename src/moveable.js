@@ -1,22 +1,18 @@
 // define the function
 // argument names from here
 // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images
-function Moveable(xPos, yPos, width, height) {
-  // default values will be ground I guess
-  xPos = xPos || 0;
-  xPos = xPos || 187;
-  width = width || 13;
-  height = height || 10;
+
+class Moveable {
+  construction(options) {
+    // eventually I'll have a sprite
+    this.image = options.image;
+    // need to keep track of the objects x and y pos
+    this.posX = options.posX;
+    this.posY = options.posY;
+    // speed in x and y
+    this.dX = options.dX;
+    this.dY = options.dY;
+  }
 }
 
-//protype will have:
-
-// hits
-
-// draw - takes context arg
-Moveable.prototype.draw = function(ctx,img,sX,xY,sWidth,sHeight) {
-  ctx.drawImage(img,sX,sY,sWidth,sHeight);
-};
-
-
-// move
+export default Moveable;
