@@ -39,10 +39,13 @@ class Player {
   draw(ctx) {
     // i'm saving the output of the position changing as a variable, that should help with collision detection?
     // if I were to make 
-    
+    const frog = new Image();
+    frog.src = '../images/88720.png';
+    ctx.drawImage(frog,24,21,13,10,this.posX,this.posY,this.width,this.height);
+
     // eventually this will be a sprite
-    ctx.fillStyle = "purple";
-    ctx.fillRect(this.posX, this.posY, this.width, this.height);
+    // ctx.fillStyle = "purple";
+    // ctx.fillRect(this.posX, this.posY, this.width, this.height);
     // ???
     this.move();
     

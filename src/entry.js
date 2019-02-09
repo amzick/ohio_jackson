@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     startX: gameCanvas.width / 2,
     startY: gameCanvas.height / 2,
     speed: 1,
-    width: 10,
+    width: 13,
     height: 10
   });
 
