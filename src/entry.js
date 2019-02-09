@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // set up the player in the middle of the board
   const player = new Player({
     canvas: gameCanvas,
-    posX: gameCanvas.width / 2,
-    posY: gameCanvas.height / 2,
+    startX: gameCanvas.width / 2,
+    startY: gameCanvas.height / 2,
     speed: 1,
     width: 10,
     height: 10
