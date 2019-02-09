@@ -5,7 +5,7 @@ body {
 }
 
 canvas {
-  border: solid 10px black;
+  border: solid 1px black;
   width: 800px;
   height: 600px;
 }
