@@ -16,11 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
     width: 10,
     height: 10
   });
-  
+
   // render, draw every 10 ms
   var interval = setInterval(draw, 10);
   function draw() {
-    ctx.clearRect(0,0,gameCanvas.width, gameCanvas.height);
+    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     player.draw(ctx);
     // ctx.fillStyle = "purple";
     // ctx.fillRect(0,0,10,10);
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  
+
 
 });
 
