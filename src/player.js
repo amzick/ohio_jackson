@@ -30,35 +30,22 @@ class Player {
     document.addEventListener("keyup", this.handleKeyup.bind(this), false);
 
     //bind draw?
-    this.draw = this.draw.bind(this);
+    // this.draw = this.draw.bind(this);
+    this.move = this.move.bind(this);
 
 
   }
 
   draw(ctx) {
-    this.posX = this.startX + (this.dX * this.speed);
-    this.posY = this.startY + (this.dY * this.speed);
+    // i'm saving the output of the position changing as a variable, that should help with collision detection?
+    // if I were to make 
+    
     // eventually this will be a sprite
     ctx.fillStyle = "purple";
     ctx.fillRect(this.posX, this.posY, this.width, this.height);
     // ???
-    // this.move();
-    if (this.leftPressed && this.posX > 0) {
-      this.dX -= 1;
-      // console.log("left!");
-      // this.posX -= 1;
-    } else if (this.rightPressed && this.posX < (this.canvas.width - this.width)) {
-      
-      this.dX += 1;
-      // this.posX += 1;
-
-    }
-
-    if (this.upPressed && this.posY > 0) {
-      this.dY -= 1;
-    } else if (this.downPressed && this.posY < (this.canvas.height - this.height)) {
-      this.dY += 1;
-    }
+    this.move();
+    
   }
 
   collides() {
@@ -98,7 +85,24 @@ class Player {
   // add in can't go through edge of canvas
   move() {
     // called in draw?
+    this.posX = this.startX + (this.dX * this.speed);
+    this.posY = this.startY + (this.dY * this.speed);
+    if (this.leftPressed && this.posX > 0) {
+      this.dX -= 1;
+      // console.log("left!");
+      // this.posX -= 1;
+    } else if (this.rightPressed && this.posX < (this.canvas.width - this.width)) {
 
+      this.dX += 1;
+      // this.posX += 1;
+
+    }
+
+    if (this.upPressed && this.posY > 0) {
+      this.dY -= 1;
+    } else if (this.downPressed && this.posY < (this.canvas.height - this.height)) {
+      this.dY += 1;
+    }
   }
 }
 
