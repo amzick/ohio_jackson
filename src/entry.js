@@ -8,8 +8,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = gameCanvas.getContext('2d');
 
   // set up the player in the middle of the board
+
+  const frog = new Image();
+  frog.src = '../images/88720.png';
   const player = new Player({
     canvas: gameCanvas,
+    image: frog,
+    sX: 24,
+    sY: 21,
+    sWidth: 13,
+    sHeight: 10,
     startX: gameCanvas.width / 2,
     startY: gameCanvas.height / 2,
     speed: 1,
