@@ -16,13 +16,20 @@ class Moveable {
     this.startX = options.startX;
     this.startY = options.startY;
     // speed in x and y
-    this.speed = options.speed;
-    this.dX = 0;
-    this.dY = 0;
+    this.speed = options.speed || 1;
+    this.dX = options.dX || 0;
+    this.dY = options.dY || 0;
     // width and height
     this.width = options.width;
     this.height = options.height;
+    // default posX and posY
+    // this.posX = options.posX || this.canvas.width / 2;
+    // this.posY = options.posY || this.canvas.height / 2;
 
+    this.posX = this.startX + (this.dX * this.speed);
+    this.posY = this.startY + (this.dY * this.speed);
+
+    this.draw = this.draw.bind(this);
     this.move = this.move.bind(this);
   }
 

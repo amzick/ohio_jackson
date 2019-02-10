@@ -1,4 +1,5 @@
 import Player from './player';
+import Collectable from './collectable';
 
 document.addEventListener("DOMContentLoaded", () => {
   // set up the canvas
@@ -20,9 +21,43 @@ document.addEventListener("DOMContentLoaded", () => {
     sHeight: 10,
     startX: gameCanvas.width / 2,
     startY: gameCanvas.height / 2,
-    speed: 1,
+    speed: 0.5,
     width: 13,
     height: 10
+  });
+
+  const coinImg = new Image();
+  coinImg.src = '../images/coin.png';
+  const coin = new Collectable({
+    canvas: gameCanvas,
+    image: coinImg,
+    sX: 6,
+    sY: 6,
+    sWidth: 60,
+    sHeight: 60,
+    startX: 50,
+    startY: 50,
+    speed: 0.3,
+    dX: 1,
+    width: 5,
+    height: 5
+  });
+
+  const coin2 = new Collectable({
+    canvas: gameCanvas,
+    image: coinImg,
+    sX: 6,
+    sY: 6,
+    sWidth: 60,
+    sHeight: 60,
+    startX: 100,
+    startY: 100,
+    speed: 0.3,
+    dX: 1,
+    width: 5,
+    height: 5,
+    range: 50,
+    direction: "V"
   });
 
   // render, draw every 10 ms
@@ -30,9 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function draw() {
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     player.draw(ctx);
-    // ctx.fillStyle = "purple";
-    // ctx.fillRect(0,0,10,10);
-  }
+    coin.draw(ctx);
+    coin2.draw(ctx);
+    }
 
 
 

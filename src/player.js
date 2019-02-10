@@ -4,10 +4,6 @@ class Player extends Moveable {
   constructor(options) {
     super(options);
 
-    // movement
-    this.posX = this.startX + (this.dX * this.speed);
-    this.posY = this.startY + (this.dY * this.speed);
-
     this.leftPressed = false;
     this.rightPressed = false;
     this.upPressed = false;
@@ -54,7 +50,6 @@ class Player extends Moveable {
 
   // add in can't go through edge of canvas
   move() {
-    // called in draw?
     this.posX = this.startX + (this.dX * this.speed);
     this.posY = this.startY + (this.dY * this.speed);
     if (this.leftPressed && this.posX > 0) {
