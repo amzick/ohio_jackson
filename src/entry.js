@@ -1,5 +1,6 @@
 import Player from './player';
 import Collectable from './collectable';
+import Projectile from './projectile';
 
 document.addEventListener("DOMContentLoaded", () => {
   // set up the canvas
@@ -60,6 +61,24 @@ document.addEventListener("DOMContentLoaded", () => {
     direction: "V"
   });
 
+
+  const snake = new Image();
+  snake.src = "../images/snake.png";
+
+  const testFire = new Projectile({
+    canvas: gameCanvas,
+    image: snake,
+    sX: 83,
+    sY: 112,
+    sWidth: 18,
+    sHeight: 17,
+    startX: gameCanvas.width + 10,
+    startY: -10,
+    speed: 0.1,
+    width: 18,
+    height: 17
+  });
+
   // render, draw every 10 ms
   var interval = setInterval(draw, 10);
   function draw() {
@@ -67,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     player.draw(ctx);
     coin.draw(ctx);
     coin2.draw(ctx);
+    testFire.draw(ctx);
     }
 
 
