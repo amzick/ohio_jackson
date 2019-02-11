@@ -64,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const snake = new Image();
   snake.src = "https://www.spriters-resource.com/resources/sheets/84/87238.png";
-  snake.scr = '../images/snake.png'
 
   const testFire = new Projectile({
     canvas: gameCanvas,

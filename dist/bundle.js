@@ -261,7 +261,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   var snake = new Image();
   snake.src = "https://www.spriters-resource.com/resources/sheets/84/87238.png";
-  snake.scr = '../images/snake.png';
   var testFire = new _projectile__WEBPACK_IMPORTED_MODULE_2__["default"]({
     canvas: gameCanvas,
     image: snake,
