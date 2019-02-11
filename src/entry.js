@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // set up the player in the middle of the board
 
   const frog = new Image();
-  frog.src = './../images/88720.png';
+  frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
   const player = new Player({
     canvas: gameCanvas,
     image: frog,
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const coinImg = new Image();
-  coinImg.src = './../images/coin.png';
+  coinImg.src = 'https://www.spriters-resource.com/resources/sheets/107/109971.png';
   const coin = new Collectable({
     canvas: gameCanvas,
     image: coinImg,
@@ -63,7 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   const snake = new Image();
-  snake.src = "./../images/snake.png";
+  snake.src = "https://www.spriters-resource.com/resources/sheets/84/87238.png";
+  snake.scr = '../images/snake.png'
 
   const testFire = new Projectile({
     canvas: gameCanvas,
@@ -79,15 +80,51 @@ document.addEventListener("DOMContentLoaded", () => {
     height: 17
   });
 
+  // should score be its own file..? or maybe what is entry now will become game
+  const score = 0;
+  const drawScore = () => {
+    ctx.font = "12px Courier New";
+    ctx.fillStyle = "black";
+    ctx.fillText("Score: " + score, 10, 15);
+  };
+
+  const drawHealth = () => {
+    ctx.font = "12px Courier New";
+    ctx.fillStyle = "black";
+    ctx.fillText("Health: ", gameCanvas.width - 125, 15);
+  };
+
+  const drawHealthBar = () => {
+    ctx.beginPath();
+    ctx.rect(gameCanvas.width - 62, 5, 50, 12);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.rect(gameCanvas.width - 61, 6, (player.health*47), 10);
+    if (player.health <= 0.3) {
+      ctx.fillStyle = 'red';
+    } else if (player.health <= 0.6) {
+      ctx.fillStyle = 'yellow';
+    } else {
+      ctx.fillStyle = 'green';
+    }
+    ctx.fill();
+  };
   // render, draw every 10 ms
   var interval = setInterval(draw, 10);
   function draw() {
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+    drawScore();
+    drawHealth();
+    drawHealthBar();
     player.draw(ctx);
     coin.draw(ctx);
     coin2.draw(ctx);
     testFire.draw(ctx);
-    }
+  }
 
 
 

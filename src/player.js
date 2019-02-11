@@ -12,6 +12,7 @@ class Player extends Moveable {
     document.addEventListener("keydown", this.handleKeydown.bind(this), false);
     document.addEventListener("keyup", this.handleKeyup.bind(this), false);
 
+    this.health = 1;
   }
 
   collides() {
