@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // set up the player in the middle of the board
 
   const frog = new Image();
-  frog.src = '../images/88720.png';
+  frog.src = './../images/88720.png';
   const player = new Player({
     canvas: gameCanvas,
     image: frog,
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const coinImg = new Image();
-  coinImg.src = '../images/coin.png';
+  coinImg.src = './../images/coin.png';
   const coin = new Collectable({
     canvas: gameCanvas,
     image: coinImg,
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   const snake = new Image();
-  snake.src = "../images/snake.png";
+  snake.src = "./../images/snake.png";
 
   const testFire = new Projectile({
     canvas: gameCanvas,
