@@ -1,10 +1,10 @@
-// define the function
-// argument names from here
-// https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images
+import GameObject from './game_object';
 
-class Moveable {
+
+class Moveable extends GameObject {
   constructor(options) {
     // need a reference to the canvas?
+    super(options);
     this.canvas = options.canvas;
     // eventually I'll have a sprite
     this.image = options.image;

@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
   gameCanvas.height = 224;
   const ctx = gameCanvas.getContext('2d');
 
+  // this array will be used to check that all objects are colliding with each other
+  const gameObjects = [];
+
   // set up the player in the middle of the board
 
   const frog = new Image();
@@ -79,6 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
     height: 17
   });
 
+  gameObjects.push(player);
+  gameObjects.push(coin);
+  gameObjects.push(coin2);
+  gameObjects.push(testFire);
+
   // should score be its own file..? or maybe what is entry now will become game
   const score = 0;
   const drawScore = () => {
@@ -102,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.closePath();
 
     ctx.beginPath();
-    ctx.rect(gameCanvas.width - 61, 6, (player.health*47), 10);
+    ctx.rect(gameCanvas.width - 61, 6, (player.health * 47), 10);
     if (player.health <= 0.3) {
       ctx.fillStyle = 'red';
     } else if (player.health <= 0.6) {
@@ -112,20 +120,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     ctx.fill();
   };
+
+  // detect collisions
+  const detectCollisions = (gameObjects) => {
+    for (let i = 0; i < gameObjects.length; i++) {
+      for (let j = 0; j < gameObjects.length; j++) {
+        const obj1 = gameObjects[i];
+        const obj2 = gameObjects[j];
+        if (obj1.collidesWith(obj2) && i !== j) {
+          console.log("collision detected");
+        }
+      }
+    }
+  };
+
+
+  // console.log(gameObjects);
   // render, draw every 10 ms
-  var interval = setInterval(draw, 10);
-  function draw() {
+  // var interval = setInterval(draw, 10);
+  // function draw() {
+  //   ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+  //   drawScore();
+  //   drawHealth();
+  //   drawHealthBar();
+  //   gameObjects.forEach((object) => object.draw(ctx));
+  //   detectCollisions(gameObjects);
+  // }
+
+
+  function animate() {
+    requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     drawScore();
     drawHealth();
     drawHealthBar();
-    player.draw(ctx);
-    coin.draw(ctx);
-    coin2.draw(ctx);
-    testFire.draw(ctx);
+    gameObjects.forEach(object => object.draw(ctx));
+    detectCollisions(gameObjects);
+    // simpleDetect();
   }
 
-
+  animate();
 
 
 

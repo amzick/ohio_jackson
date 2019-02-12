@@ -210,7 +210,9 @@ document.addEventListener("DOMContentLoaded", function () {
   var gameCanvas = document.getElementById("game-canvas");
   gameCanvas.width = 320;
   gameCanvas.height = 224;
-  var ctx = gameCanvas.getContext('2d'); // set up the player in the middle of the board
+  var ctx = gameCanvas.getContext('2d'); // this array will be used to check that all objects are colliding with each other
+
+  var gameObjects = []; // set up the player in the middle of the board
 
   var frog = new Image();
   frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
@@ -273,7 +275,11 @@ document.addEventListener("DOMContentLoaded", function () {
     speed: 0.1,
     width: 18,
     height: 17
-  }); // should score be its own file..? or maybe what is entry now will become game
+  });
+  gameObjects.push(player);
+  gameObjects.push(coin);
+  gameObjects.push(coin2);
+  gameObjects.push(testFire); // should score be its own file..? or maybe what is entry now will become game
 
   var score = 0;
 
@@ -308,23 +314,88 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     ctx.fill();
-  }; // render, draw every 10 ms
+  }; // detect collisions
 
 
-  var interval = setInterval(draw, 10);
+  var detectCollisions = function detectCollisions(gameObjects) {
+    for (var i = 0; i < gameObjects.length; i++) {
+      for (var j = 0; j < gameObjects.length; j++) {
+        var obj1 = gameObjects[i];
+        var obj2 = gameObjects[j];
 
-  function draw() {
+        if (obj1.collidesWith(obj2) && i !== j) {
+          console.log("collision detected");
+        }
+      }
+    }
+  }; // console.log(gameObjects);
+  // render, draw every 10 ms
+  // var interval = setInterval(draw, 10);
+  // function draw() {
+  //   ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+  //   drawScore();
+  //   drawHealth();
+  //   drawHealthBar();
+  //   gameObjects.forEach((object) => object.draw(ctx));
+  //   detectCollisions(gameObjects);
+  // }
+
+
+  function animate() {
+    requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     drawScore();
     drawHealth();
     drawHealthBar();
-    player.draw(ctx);
-    coin.draw(ctx);
-    coin2.draw(ctx);
-    testFire.draw(ctx);
+    gameObjects.forEach(function (object) {
+      return object.draw(ctx);
+    });
+    detectCollisions(gameObjects); // simpleDetect();
   }
+
+  animate();
 }); // movement:
 // https://www.kirupa.com/canvas/moving_shapes_canvas_keyboard.htm
+
+/***/ }),
+
+/***/ "./src/game_object.js":
+/*!****************************!*\
+  !*** ./src/game_object.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var GameObject =
+/*#__PURE__*/
+function () {
+  function GameObject() {
+    _classCallCheck(this, GameObject);
+  }
+
+  _createClass(GameObject, [{
+    key: "collidesWith",
+    value: function collidesWith(gameObject) {
+      if (this.posX < gameObject.posX + gameObject.width && this.posX + this.width > gameObject.posX && this.posY < gameObject.posY + gameObject.height && this.posY + this.height > gameObject.posY) {
+        return true;
+      }
+
+      return false;
+    }
+  }]);
+
+  return GameObject;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (GameObject);
 
 /***/ }),
 
@@ -337,46 +408,64 @@ document.addEventListener("DOMContentLoaded", function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _game_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game_object */ "./src/game_object.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-// define the function
-// argument names from here
-// https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+
+
 var Moveable =
 /*#__PURE__*/
-function () {
+function (_GameObject) {
+  _inherits(Moveable, _GameObject);
+
   function Moveable(options) {
+    var _this;
+
     _classCallCheck(this, Moveable);
 
     // need a reference to the canvas?
-    this.canvas = options.canvas; // eventually I'll have a sprite
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Moveable).call(this, options));
+    _this.canvas = options.canvas; // eventually I'll have a sprite
 
-    this.image = options.image;
-    this.sX = options.sX;
-    this.sY = options.sY;
-    this.sWidth = options.sWidth;
-    this.sHeight = options.sHeight; // need to keep track of the objects x and y pos
+    _this.image = options.image;
+    _this.sX = options.sX;
+    _this.sY = options.sY;
+    _this.sWidth = options.sWidth;
+    _this.sHeight = options.sHeight; // need to keep track of the objects x and y pos
 
-    this.startX = options.startX;
-    this.startY = options.startY; // speed in x and y
+    _this.startX = options.startX;
+    _this.startY = options.startY; // speed in x and y
 
-    this.speed = options.speed || 1;
-    this.dX = options.dX || 0;
-    this.dY = options.dY || 0; // width and height
+    _this.speed = options.speed || 1;
+    _this.dX = options.dX || 0;
+    _this.dY = options.dY || 0; // width and height
 
-    this.width = options.width;
-    this.height = options.height; // default posX and posY
+    _this.width = options.width;
+    _this.height = options.height; // default posX and posY
     // this.posX = options.posX || this.canvas.width / 2;
     // this.posY = options.posY || this.canvas.height / 2;
 
-    this.posX = this.startX + this.dX * this.speed;
-    this.posY = this.startY + this.dY * this.speed;
-    this.draw = this.draw.bind(this);
-    this.move = this.move.bind(this);
+    _this.posX = _this.startX + _this.dX * _this.speed;
+    _this.posY = _this.startY + _this.dY * _this.speed;
+    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.move = _this.move.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    return _this;
   }
 
   _createClass(Moveable, [{
@@ -397,7 +486,7 @@ function () {
   }]);
 
   return Moveable;
-}();
+}(_game_object__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (Moveable);
 
