@@ -3,15 +3,112 @@ import Moveable from './moveable';
 class Projectile extends Moveable {
   constructor(options) {
     super(options);
+    const arrowImg = new Image();
+    arrowImg.src = "https://s3.amazonaws.com/letsgoeros-dev/new_arrows.png";
+    const arrowFlipped = new Image();
+    arrowFlipped.src = "https://s3.amazonaws.com/letsgoeros-dev/new_arrows_flipped.png";
+
+    this.image = options.flipped ? arrowFlipped : arrowImg; 
     // projectiles will originate off the screen and fly across
     // if they are off the left side they will have a positive dX, right side negative
     // if they are off the top side they will have a positive dY, bottom negative
-    this.dX = (this.startX < 0 ? 1 : -1);
-    this.dY = (this.startY < 0 ? 1 : -1);
-    this.deltaX = Math.floor(Math.random() * (1000 - 500)) / 100;
-    this.deltaY = Math.floor(Math.random() * (1000 - 500)) / 100;
+    this.dX = options.dX || (this.startX < 0 ? 1 : -1);
+    this.dY = options.dY || (this.startY < 0 ? 1 : -1);
+    this.deltaX = options.deltaX;
+    this.deltaY = options.deltaY;
+  }
 
-    this.move = this.move.bind(this);
+  remove() {
+    this.game.arrows.delete(this);
+  }
+
+  // generate arrows from various positions
+  static sides(game) {
+    const origin = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
+    // true will be left, false will be right
+    const validStartY = Math.random() * (game.canvas.height-16 - 16) + 16;
+    const speed = Math.random() * (1-0.6) + 0.6;
+    if (origin) {
+      // left to right
+      return new Projectile({
+        game,
+        canvas: game.canvas,
+        flipped: true,
+        sX: 69,
+        sY: 104,
+        sWidth: 29,
+        sHeight: 3,
+        startX: 8,
+        startY: validStartY,
+        dX: 1,
+        dY: 0,
+        deltaX: 2.5,
+        deltaY: 0,
+        speed,
+        width: 14.5,
+        height: 1.5
+      });
+    } else {
+      // right to left
+      return new Projectile({
+        game,
+        canvas: game.canvas,
+        sX: 7,
+        sY: 26,
+        sWidth: 29,
+        sHeight: 3,
+        startX: game.canvas.width - 8,
+        startY: validStartY,
+        dX: -1,
+        dY: 0,
+        deltaX: 2.5,
+        deltaY: 0,
+        speed,
+        width: 14.5,
+        height: 1.5,
+      });
+    }
+    // return new Projectile({
+    //   game,
+    //   canvas: game.canvas,
+    //   flipped: (!!origin ? true : false)
+      
+    //   startX: (!!origin ? 8 : game.canvas.width - 8),
+    //   startY: validStartY,
+    //   dX: (!!origin ? 1 : -1),
+    //   dY: 0,
+    //   deltaX: 2.5,
+    //   deltaY: 0,
+    //   speed,
+    //   width: 19.5,
+    //   height: 1.5
+    // });
+  }
+
+  static topBottom(game) {
+    // const origin = [0, 1][Math.floor(Math.random() * (2 - 0) + 0)];
+
+      
+    //   // zero will be the top here
+    // const validStartX = Math.random() * (game.canvas.width-16 - 16) + 16;
+    // const speed = Math.random() * (1-0.6) + 0.6;
+    // return new Projectile({
+    //   game,
+    //   canvas: game.canvas,
+    //   sX: (!!origin ? : 41),
+    //   sY: (!!origin ? : 35  ),
+    //   sWidth: (!!origin ? : 3  ),
+    //   sHeight: (!!origin ? : 19  ),
+    //   startX: validStartX,
+    //   startY: (!!origin ? : 41  ),
+    //   dX: 0,
+    //   dY: (!!origin ? : 1),
+    //   deltaX: 0,
+    //   deltaY: 2.5,
+    //   speed,
+    //   width: 1.5,
+    //   height: 19.5
+    // });
   }
 
 
@@ -21,18 +118,30 @@ class Projectile extends Moveable {
     this.posX = this.startX + (this.dX * this.speed);
     this.posY = this.startY + (this.dY * this.speed);
 
-    if (this.startX < 0 && this.startY < 0) {
-      this.dX += this.deltaX;
-      this.dY += this.deltaY;
-    } else if (this.startX < 0 && this.startY > 0) {
-      this.dX += this.deltaX;
-      this.dY -= this.deltaY;
-    } else if (this.startX > 0 && this.startY < 0) {
-      this.dX -= this.deltaX;
-      this.dY += this.deltaY;
-    } else if (this.startX > 0 && this.startY > 0) {
-      this.dX -= this.deltaX;
-      this.dY -= this.deltaY;
+    // if (this.startX < 0 && this.startY < 0) {
+    //   this.dX += this.deltaX;
+    //   this.dY += this.deltaY;
+    // } else if (this.startX < 0 && this.startY > 0) {
+    //   this.dX += this.deltaX;
+    //   this.dY -= this.deltaY;
+    // } else if (this.startX > 0 && this.startY < 0) {
+    //   this.dX -= this.deltaX;
+    //   this.dY += this.deltaY;
+    // } else if (this.startX > 0 && this.startY > 0) {
+    //   this.dX -= this.deltaX;
+    //   this.dY -= this.deltaY;
+    // }
+    this.dX > 0 ? this.dX += this.deltaX : this.dX -= this.deltaX;
+    this.dY > 0 ? this.dY += this.deltaY : this.dY -= this.deltaY;
+
+    // remove the object from the game if it goes out of bounds
+    if (
+      this.posX > this.canvas.width ||
+      (this.posX + this.width) < 0 ||
+      this.posY > this.canvas.height ||
+      (this.posY + this.height) < 0 
+    ) {
+      this.remove();
     }
 
   }

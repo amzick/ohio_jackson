@@ -19,10 +19,10 @@ class Game {
 
     this.score = 0;
     this.over = false;
+    this.maxArrows = options.maxArrows || 10;
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
-    this.addCoin = this.addCoin.bind(this);
   }
 
   addPlayer() {
@@ -51,7 +51,12 @@ class Game {
   }
 
   addCoin() {
-    this.coins.add(Coin.new(this, this.canvas));
+    this.coins.add(Coin.random(this));
+    this.updateGameObjects();
+  }
+
+  addArrow() {
+    this.arrows.add(Projectile.sides(this));
     this.updateGameObjects();
   }
 
@@ -59,13 +64,12 @@ class Game {
     for (let i = 0; i < this.gameObjects.length; i++) {
       const obj = this.gameObjects[i];
       if (this.player.isCollidingWith(obj)) {
-
         this.player.hits(obj);
         if (obj instanceof Collectable) {
           this.score++;
         }
         else if (obj instanceof Projectile) {
-          this.player.health -= 0.01;
+          this.player.health -= 0.1;
           if (this.player.health <= 0) {
             this.over = true;
             window.alert("You lose");
@@ -126,6 +130,11 @@ class Game {
       if (this.coins.size <= 20) {
         this.addCoin();
       }
+      
+      if (this.arrows.size < this.maxArrows) {
+        this.addArrow();
+      }
+
       this.gameObjects.forEach(object => {
         object.draw(ctx);
         object.update();

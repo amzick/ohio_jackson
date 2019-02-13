@@ -54,7 +54,7 @@ class Moveable extends GameObject {
   }
 
   update() {
-    // called in draw???
+    // redefined in each child. some won't update (arrows)
   }
 }
 

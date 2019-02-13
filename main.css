@@ -20,5 +20,6 @@ canvas {
   border: solid 5px #78a388;
   width: 800px;
   height: 600px;
-  background: #848458;
+  /* background: #848458; */
+  background: #20312f;
 }

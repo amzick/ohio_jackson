@@ -159,11 +159,11 @@ function (_Collectable) {
       this.game.coins.delete(this);
     }
   }], [{
-    key: "new",
-    value: function _new(game, canvas) {
+    key: "random",
+    value: function random(game) {
       var range = Math.random() * (25 - 7) + 7;
-      var validStartX = Math.random() * (canvas.width - 15 - 16 - range) + (16 + range);
-      var validStartY = Math.random() * (canvas.height - 15 - 16 - range) + (16 + range);
+      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range) + (16 + range);
+      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range) + (16 + range);
       var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
       var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
       return new Coin({
@@ -334,55 +334,24 @@ document.addEventListener("DOMContentLoaded", function () {
   gameCanvas.width = 320;
   gameCanvas.height = 224;
   var ctx = gameCanvas.getContext('2d');
-  var coinImg = new Image();
-  coinImg.src = 'https://www.spriters-resource.com/resources/sheets/107/109971.png';
-  var coin = new _coin__WEBPACK_IMPORTED_MODULE_3__["default"]({
-    canvas: gameCanvas,
-    sX: 6,
-    sY: 6,
-    sWidth: 60,
-    sHeight: 60,
-    startX: 50,
-    startY: 50,
-    speed: 0.3,
-    dX: 1,
-    width: 5,
-    height: 5
-  });
-  var coin2 = new _collectable__WEBPACK_IMPORTED_MODULE_2__["default"]({
-    canvas: gameCanvas,
-    image: coinImg,
-    sX: 6,
-    sY: 6,
-    sWidth: 60,
-    sHeight: 60,
-    startX: 100,
-    startY: 100,
-    speed: 0.3,
-    dX: 1,
-    width: 5,
-    height: 5,
-    range: 50,
-    direction: "V"
-  });
   var snake = new Image();
   snake.src = "https://www.spriters-resource.com/resources/sheets/84/87238.png";
+  var arrowImg = new Image();
+  arrowImg.src = "https://s3.amazonaws.com/letsgoeros-dev/arrows.png";
   var testFire = new _projectile__WEBPACK_IMPORTED_MODULE_4__["default"]({
     canvas: gameCanvas,
-    image: snake,
-    sX: 83,
-    sY: 112,
-    sWidth: 18,
-    sHeight: 17,
+    sX: 41,
+    sY: 35,
+    sWidth: 3,
+    sHeight: 19,
     startX: gameCanvas.width + 10,
     startY: -10,
-    speed: 0.1,
-    width: 18,
-    height: 17
+    speed: Math.random() * (1 - 0.1) + 0.1,
+    width: 3,
+    height: 19
   });
   var game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
-    canvas: gameCanvas,
-    arrows: [testFire]
+    canvas: gameCanvas
   });
   var jungleImg = new Image(); // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
 
@@ -402,10 +371,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  var ground = new Image();
+  ground.src = "https://www.spriters-resource.com/resources/sheets/56/59176.png";
+
+  function drawGround(ctx) {
+    for (var i = 1; i < 19; i++) {
+      for (var j = 1; j < 13; j++) {
+        ctx.drawImage(ground, 762, 267, 28, 28, i * 16, j * 16, 16, 16);
+      }
+    }
+  }
+
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     drawBorder(ctx);
+    drawGround(ctx);
     game.draw(ctx);
   }
 
@@ -463,11 +444,11 @@ function () {
     this.playerSpeed = 1;
     this.projectileSpeed = 0.1;
     this.score = 0;
-    this.over = false; //functions
+    this.over = false;
+    this.maxArrows = options.maxArrows || 10; //functions
 
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
-    this.addCoin = this.addCoin.bind(this);
   }
 
   _createClass(Game, [{
@@ -500,7 +481,13 @@ function () {
   }, {
     key: "addCoin",
     value: function addCoin() {
-      this.coins.add(_coin__WEBPACK_IMPORTED_MODULE_2__["default"].new(this, this.canvas));
+      this.coins.add(_coin__WEBPACK_IMPORTED_MODULE_2__["default"].random(this));
+      this.updateGameObjects();
+    }
+  }, {
+    key: "addArrow",
+    value: function addArrow() {
+      this.arrows.add(_projectile__WEBPACK_IMPORTED_MODULE_3__["default"].sides(this));
       this.updateGameObjects();
     }
   }, {
@@ -515,7 +502,7 @@ function () {
           if (obj instanceof _collectable__WEBPACK_IMPORTED_MODULE_1__["default"]) {
             this.score++;
           } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]) {
-            this.player.health -= 0.01;
+            this.player.health -= 0.1;
 
             if (this.player.health <= 0) {
               this.over = true;
@@ -582,6 +569,10 @@ function () {
 
         if (this.coins.size <= 20) {
           this.addCoin();
+        }
+
+        if (this.arrows.size < this.maxArrows) {
+          this.addArrow();
         }
 
         this.gameObjects.forEach(function (object) {
@@ -735,7 +726,7 @@ function (_GameObject) {
     }
   }, {
     key: "update",
-    value: function update() {// called in draw???
+    value: function update() {// redefined in each child. some won't update (arrows)
     }
   }]);
 
@@ -805,11 +796,7 @@ function (_Moveable) {
   _createClass(Player, [{
     key: "hits",
     value: function hits(object) {
-      console.log("Player is hitting");
-
-      if (object instanceof _coin__WEBPACK_IMPORTED_MODULE_2__["default"]) {
-        object.remove();
-      }
+      object.remove();
     }
   }, {
     key: "handleKeydown",
@@ -892,13 +879,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 
 
@@ -912,38 +899,140 @@ function (_Moveable) {
 
     _classCallCheck(this, Projectile);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Projectile).call(this, options)); // projectiles will originate off the screen and fly across
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Projectile).call(this, options));
+    var arrowImg = new Image();
+    arrowImg.src = "https://s3.amazonaws.com/letsgoeros-dev/new_arrows.png";
+    var arrowFlipped = new Image();
+    arrowFlipped.src = "https://s3.amazonaws.com/letsgoeros-dev/new_arrows_flipped.png";
+    _this.image = options.flipped ? arrowFlipped : arrowImg; // projectiles will originate off the screen and fly across
     // if they are off the left side they will have a positive dX, right side negative
     // if they are off the top side they will have a positive dY, bottom negative
 
-    _this.dX = _this.startX < 0 ? 1 : -1;
-    _this.dY = _this.startY < 0 ? 1 : -1;
-    _this.deltaX = Math.floor(Math.random() * (1000 - 500)) / 100;
-    _this.deltaY = Math.floor(Math.random() * (1000 - 500)) / 100;
-    _this.move = _this.move.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.dX = options.dX || (_this.startX < 0 ? 1 : -1);
+    _this.dY = options.dY || (_this.startY < 0 ? 1 : -1);
+    _this.deltaX = options.deltaX;
+    _this.deltaY = options.deltaY;
     return _this;
   }
 
   _createClass(Projectile, [{
+    key: "remove",
+    value: function remove() {
+      this.game.arrows.delete(this);
+    } // generate arrows from various positions
+
+  }, {
     key: "move",
     value: function move() {
       // generate a random number between 0 and 5 for the projecticle's x and y direction
       this.posX = this.startX + this.dX * this.speed;
-      this.posY = this.startY + this.dY * this.speed;
+      this.posY = this.startY + this.dY * this.speed; // if (this.startX < 0 && this.startY < 0) {
+      //   this.dX += this.deltaX;
+      //   this.dY += this.deltaY;
+      // } else if (this.startX < 0 && this.startY > 0) {
+      //   this.dX += this.deltaX;
+      //   this.dY -= this.deltaY;
+      // } else if (this.startX > 0 && this.startY < 0) {
+      //   this.dX -= this.deltaX;
+      //   this.dY += this.deltaY;
+      // } else if (this.startX > 0 && this.startY > 0) {
+      //   this.dX -= this.deltaX;
+      //   this.dY -= this.deltaY;
+      // }
 
-      if (this.startX < 0 && this.startY < 0) {
-        this.dX += this.deltaX;
-        this.dY += this.deltaY;
-      } else if (this.startX < 0 && this.startY > 0) {
-        this.dX += this.deltaX;
-        this.dY -= this.deltaY;
-      } else if (this.startX > 0 && this.startY < 0) {
-        this.dX -= this.deltaX;
-        this.dY += this.deltaY;
-      } else if (this.startX > 0 && this.startY > 0) {
-        this.dX -= this.deltaX;
-        this.dY -= this.deltaY;
+      this.dX > 0 ? this.dX += this.deltaX : this.dX -= this.deltaX;
+      this.dY > 0 ? this.dY += this.deltaY : this.dY -= this.deltaY; // remove the object from the game if it goes out of bounds
+
+      if (this.posX > this.canvas.width || this.posX + this.width < 0 || this.posY > this.canvas.height || this.posY + this.height < 0) {
+        this.remove();
       }
+    }
+  }], [{
+    key: "sides",
+    value: function sides(game) {
+      var origin = [true, false][Math.floor(Math.random() * (2 - 0) + 0)]; // true will be left, false will be right
+
+      var validStartY = Math.random() * (game.canvas.height - 16 - 16) + 16;
+      var speed = Math.random() * (1 - 0.6) + 0.6;
+
+      if (origin) {
+        // left to right
+        return new Projectile({
+          game: game,
+          canvas: game.canvas,
+          flipped: true,
+          sX: 69,
+          sY: 104,
+          sWidth: 29,
+          sHeight: 3,
+          startX: 8,
+          startY: validStartY,
+          dX: 1,
+          dY: 0,
+          deltaX: 2.5,
+          deltaY: 0,
+          speed: speed,
+          width: 14.5,
+          height: 1.5
+        });
+      } else {
+        // right to left
+        return new Projectile({
+          game: game,
+          canvas: game.canvas,
+          sX: 7,
+          sY: 26,
+          sWidth: 29,
+          sHeight: 3,
+          startX: game.canvas.width - 8,
+          startY: validStartY,
+          dX: -1,
+          dY: 0,
+          deltaX: 2.5,
+          deltaY: 0,
+          speed: speed,
+          width: 14.5,
+          height: 1.5
+        });
+      } // return new Projectile({
+      //   game,
+      //   canvas: game.canvas,
+      //   flipped: (!!origin ? true : false)
+      //   startX: (!!origin ? 8 : game.canvas.width - 8),
+      //   startY: validStartY,
+      //   dX: (!!origin ? 1 : -1),
+      //   dY: 0,
+      //   deltaX: 2.5,
+      //   deltaY: 0,
+      //   speed,
+      //   width: 19.5,
+      //   height: 1.5
+      // });
+
+    }
+  }, {
+    key: "topBottom",
+    value: function topBottom(game) {// const origin = [0, 1][Math.floor(Math.random() * (2 - 0) + 0)];
+      //   // zero will be the top here
+      // const validStartX = Math.random() * (game.canvas.width-16 - 16) + 16;
+      // const speed = Math.random() * (1-0.6) + 0.6;
+      // return new Projectile({
+      //   game,
+      //   canvas: game.canvas,
+      //   sX: (!!origin ? : 41),
+      //   sY: (!!origin ? : 35  ),
+      //   sWidth: (!!origin ? : 3  ),
+      //   sHeight: (!!origin ? : 19  ),
+      //   startX: validStartX,
+      //   startY: (!!origin ? : 41  ),
+      //   dX: 0,
+      //   dY: (!!origin ? : 1),
+      //   deltaX: 0,
+      //   deltaY: 2.5,
+      //   speed,
+      //   width: 1.5,
+      //   height: 19.5
+      // });
     }
   }]);
 

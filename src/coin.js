@@ -48,10 +48,10 @@ class Coin extends Collectable {
     this.game.coins.delete(this);
   }
 
-  static new(game, canvas) {
+  static random(game) {
     const range = Math.random() * (25 - 7) + 7;
-    const validStartX = Math.random() * (canvas.width - 15 - 16 - range) + (16 + range);
-    const validStartY = Math.random() * (canvas.height - 15 - 16 - range) + (16 + range);
+    const validStartX = Math.random() * (game.canvas.width - 15 - 16 - range) + (16 + range);
+    const validStartY = Math.random() * (game.canvas.height - 15 - 16 - range) + (16 + range);
 
     const direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
     const switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];

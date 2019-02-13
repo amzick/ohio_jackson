@@ -17,10 +17,7 @@ class Player extends Moveable {
   }
 
   hits(object) {
-    console.log("Player is hitting");
-    if (object instanceof Coin) {
-      object.remove();
-    }
+    object.remove();
   }
 
   handleKeydown(event) {
