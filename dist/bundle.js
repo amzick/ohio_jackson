@@ -445,7 +445,7 @@ function () {
     this.projectileSpeed = 0.1;
     this.score = 0;
     this.over = false;
-    this.maxArrows = options.maxArrows || 10; //functions
+    this.maxArrows = options.maxArrows || 1; //functions
 
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -476,6 +476,32 @@ function () {
   }, {
     key: "updateGameObjects",
     value: function updateGameObjects() {
+      switch (true) {
+        case this.score < 10:
+          this.maxArrows = 1;
+          break;
+
+        case this.score < 20:
+          this.maxArrows = 2;
+          break;
+
+        case this.score < 30:
+          this.maxArrows = 5;
+          break;
+
+        case this.score < 50:
+          this.maxArrows = 8;
+          break;
+
+        case this.score < 75:
+          this.maxArrows = 10;
+          break;
+
+        default:
+          this.maxArrows = 100000;
+          break;
+      }
+
       this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.potions))));
     }
   }, {
@@ -487,7 +513,7 @@ function () {
   }, {
     key: "addArrow",
     value: function addArrow() {
-      this.arrows.add(_projectile__WEBPACK_IMPORTED_MODULE_3__["default"].sides(this));
+      this.arrows.add(_projectile__WEBPACK_IMPORTED_MODULE_3__["default"].random(this));
       this.updateGameObjects();
     }
   }, {
@@ -501,6 +527,10 @@ function () {
 
           if (obj instanceof _collectable__WEBPACK_IMPORTED_MODULE_1__["default"]) {
             this.score++;
+
+            if (this.player.health < 1) {
+              this.player.health += 0.01;
+            }
           } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]) {
             this.player.health -= 0.1;
 
@@ -994,45 +1024,61 @@ function (_Moveable) {
           width: 14.5,
           height: 1.5
         });
-      } // return new Projectile({
-      //   game,
-      //   canvas: game.canvas,
-      //   flipped: (!!origin ? true : false)
-      //   startX: (!!origin ? 8 : game.canvas.width - 8),
-      //   startY: validStartY,
-      //   dX: (!!origin ? 1 : -1),
-      //   dY: 0,
-      //   deltaX: 2.5,
-      //   deltaY: 0,
-      //   speed,
-      //   width: 19.5,
-      //   height: 1.5
-      // });
-
+      }
     }
   }, {
     key: "topBottom",
-    value: function topBottom(game) {// const origin = [0, 1][Math.floor(Math.random() * (2 - 0) + 0)];
-      //   // zero will be the top here
-      // const validStartX = Math.random() * (game.canvas.width-16 - 16) + 16;
-      // const speed = Math.random() * (1-0.6) + 0.6;
-      // return new Projectile({
-      //   game,
-      //   canvas: game.canvas,
-      //   sX: (!!origin ? : 41),
-      //   sY: (!!origin ? : 35  ),
-      //   sWidth: (!!origin ? : 3  ),
-      //   sHeight: (!!origin ? : 19  ),
-      //   startX: validStartX,
-      //   startY: (!!origin ? : 41  ),
-      //   dX: 0,
-      //   dY: (!!origin ? : 1),
-      //   deltaX: 0,
-      //   deltaY: 2.5,
-      //   speed,
-      //   width: 1.5,
-      //   height: 19.5
-      // });
+    value: function topBottom(game) {
+      var origin = [true, false][Math.floor(Math.random() * (2 - 0) + 0)]; // top is true, bottom is false
+
+      var validStartX = Math.random() * (game.canvas.width - 16 - 16) + 16;
+      var speed = Math.random() * (1 - 0.6) + 0.6;
+
+      if (origin) {
+        // top to bottom
+        return new Projectile({
+          game: game,
+          canvas: game.canvas,
+          sX: 102,
+          sY: 0,
+          sWidth: 3,
+          sHeight: 29,
+          startX: validStartX,
+          startY: 8,
+          dX: 0,
+          dY: 1,
+          deltaX: 0,
+          deltaY: 2.5,
+          speed: speed,
+          width: 1.5,
+          height: 14.5
+        });
+      } else {
+        // bottom to top
+        return new Projectile({
+          game: game,
+          canvas: game.canvas,
+          flipped: true,
+          sX: 0,
+          sY: 104,
+          sWidth: 3,
+          sHeight: 29,
+          startX: validStartX,
+          startY: game.canvas.height - 8,
+          dX: 0,
+          dY: -1,
+          deltaX: 0,
+          deltaY: 2.5,
+          speed: speed,
+          width: 1.5,
+          height: 14.5
+        });
+      }
+    }
+  }, {
+    key: "random",
+    value: function random(game) {
+      return [Projectile.sides(game), Projectile.topBottom(game)][Math.floor(Math.random() * (2 - 0) + 0)];
     }
   }]);
 

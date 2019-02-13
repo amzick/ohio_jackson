@@ -19,7 +19,7 @@ class Game {
 
     this.score = 0;
     this.over = false;
-    this.maxArrows = options.maxArrows || 10;
+    this.maxArrows = options.maxArrows || 1;
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -47,6 +47,26 @@ class Game {
   }
 
   updateGameObjects() {
+    switch (true) {
+      case (this.score < 10):
+        this.maxArrows = 1;
+        break;
+      case (this.score < 20):
+        this.maxArrows = 2;
+        break;
+      case (this.score < 30):
+        this.maxArrows = 5;
+        break;
+      case (this.score < 50):
+        this.maxArrows = 8;
+        break;
+      case (this.score < 75):
+        this.maxArrows = 10;
+        break;
+      default:
+        this.maxArrows = 100000;
+        break;
+    }
     this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.potions]));
   }
 
@@ -56,7 +76,7 @@ class Game {
   }
 
   addArrow() {
-    this.arrows.add(Projectile.sides(this));
+    this.arrows.add(Projectile.random(this));
     this.updateGameObjects();
   }
 
@@ -67,6 +87,9 @@ class Game {
         this.player.hits(obj);
         if (obj instanceof Collectable) {
           this.score++;
+          if (this.player.health < 1) {
+            this.player.health += 0.01;
+          }
         }
         else if (obj instanceof Projectile) {
           this.player.health -= 0.1;
@@ -130,7 +153,7 @@ class Game {
       if (this.coins.size <= 20) {
         this.addCoin();
       }
-      
+
       if (this.arrows.size < this.maxArrows) {
         this.addArrow();
       }

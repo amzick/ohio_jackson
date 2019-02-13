@@ -68,47 +68,58 @@ class Projectile extends Moveable {
         height: 1.5,
       });
     }
-    // return new Projectile({
-    //   game,
-    //   canvas: game.canvas,
-    //   flipped: (!!origin ? true : false)
-      
-    //   startX: (!!origin ? 8 : game.canvas.width - 8),
-    //   startY: validStartY,
-    //   dX: (!!origin ? 1 : -1),
-    //   dY: 0,
-    //   deltaX: 2.5,
-    //   deltaY: 0,
-    //   speed,
-    //   width: 19.5,
-    //   height: 1.5
-    // });
   }
 
   static topBottom(game) {
-    // const origin = [0, 1][Math.floor(Math.random() * (2 - 0) + 0)];
+    const origin = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
+    // top is true, bottom is false
+    const validStartX = Math.random() * (game.canvas.width-16 - 16) + 16;
+    const speed = Math.random() * (1-0.6) + 0.6;
 
-      
-    //   // zero will be the top here
-    // const validStartX = Math.random() * (game.canvas.width-16 - 16) + 16;
-    // const speed = Math.random() * (1-0.6) + 0.6;
-    // return new Projectile({
-    //   game,
-    //   canvas: game.canvas,
-    //   sX: (!!origin ? : 41),
-    //   sY: (!!origin ? : 35  ),
-    //   sWidth: (!!origin ? : 3  ),
-    //   sHeight: (!!origin ? : 19  ),
-    //   startX: validStartX,
-    //   startY: (!!origin ? : 41  ),
-    //   dX: 0,
-    //   dY: (!!origin ? : 1),
-    //   deltaX: 0,
-    //   deltaY: 2.5,
-    //   speed,
-    //   width: 1.5,
-    //   height: 19.5
-    // });
+    if (origin) {
+      // top to bottom
+      return new Projectile({
+        game,
+        canvas: game.canvas,
+        sX: 102,
+        sY: 0,
+        sWidth: 3,
+        sHeight: 29,
+        startX: validStartX,
+        startY: 8,
+        dX: 0,
+        dY: 1,
+        deltaX: 0,
+        deltaY: 2.5,
+        speed,
+        width: 1.5,
+        height: 14.5
+      });
+    } else {
+      // bottom to top
+      return new Projectile({
+        game,
+        canvas: game.canvas,
+        flipped: true,
+        sX: 0,
+        sY: 104,
+        sWidth: 3,
+        sHeight: 29,
+        startX: validStartX,
+        startY: game.canvas.height - 8,
+        dX: 0,
+        dY: -1,
+        deltaX: 0,
+        deltaY: 2.5,
+        speed,
+        width: 1.5,
+        height: 14.5
+      });
+    }
+  }
+
+  static random (game) {
+    return [Projectile.sides(game), Projectile.topBottom(game)][Math.floor(Math.random() * (2 - 0) + 0)];
   }
 
 
