@@ -31,12 +31,17 @@ class Moveable extends GameObject {
 
     this.draw = this.draw.bind(this);
     this.move = this.move.bind(this);
+
+    this.tickCount = 0;
+    this.ticksPerFrame = 15;
+    this.update = this.update.bind(this);
   }
 
 
   draw(ctx) {
     ctx.drawImage(this.image, this.sX, this.sY, this.sWidth, this.sHeight, this.posX, this.posY, this.width, this.height);
     this.move();
+    this.update();
   }
 
   collides() {
@@ -46,6 +51,10 @@ class Moveable extends GameObject {
 
   move() {
     // redefined in each child class since they'll have unique patterns
+  }
+
+  update() {
+    // called in draw???
   }
 }
 

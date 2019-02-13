@@ -14,7 +14,7 @@ class Game {
     this.arrows = options.arrows || new Set();
     this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.potions]));
 
-    this.playerSpeed = 0.5;
+    this.playerSpeed = 1;
     this.projectileSpeed = 0.1;
 
     this.score = 0;
@@ -51,29 +51,7 @@ class Game {
   }
 
   addCoin() {
-    const range = Math.random() * (25-7) +7;
-    const validStartX = Math.random() * (this.canvas.width - 15 - 16 - range) + (16 + range);
-    const validStartY = Math.random() * (this.canvas.height - 15 - 16 - range) + (16 + range);
-    
-    const direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
-    const switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
-    const coin = new Coin({
-      game: this,
-      sX: 6,
-      sY: 6,
-      sWidth: 60,
-      sHeight: 60,
-      startX: validStartX,
-      startY: validStartY,
-      speed: 0.3,
-      dX: 1,
-      width: 5,
-      height: 5,
-      range,
-      direction,
-      switchDirection
-    });
-    this.coins.add(coin);
+    this.coins.add(Coin.new(this, this.canvas));
     this.updateGameObjects();
   }
 
@@ -148,7 +126,10 @@ class Game {
       if (this.coins.size <= 20) {
         this.addCoin();
       }
-      this.gameObjects.forEach(object => object.draw(ctx));
+      this.gameObjects.forEach(object => {
+        object.draw(ctx);
+        object.update();
+      });
       this.detectCollisions();
     }
   }

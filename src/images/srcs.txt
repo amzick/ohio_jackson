@@ -1,0 +1,2 @@
+player: https://www.spriters-resource.com/pc_computer/broforce/sheet/110099/
+rings: https://www.spriters-resource.com/mobile/sonicrunners/sheet/81059/

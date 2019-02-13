@@ -127,16 +127,61 @@ function (_Collectable) {
     _classCallCheck(this, Coin);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Coin).call(this, options));
-    var coinImg = new Image();
-    coinImg.src = 'https://www.spriters-resource.com/resources/sheets/107/109971.png';
+    var coinImg = new Image(); // coinImg.src = 'https://www.spriters-resource.com/resources/sheets/107/109971.png';
+    // coinImg.src = './images/ring.png';
+
+    coinImg.src = "https://www.spriters-resource.com/resources/sheets/78/81059.png";
     _this.image = coinImg;
+    _this.frameIndicies = [[2, 1, 61, 62], [68, 1, 60, 62], [133, 1, 58, 52], [201, 1, 51, 62], [12, 65, 46, 62], [81, 65, 35, 62], [148, 65, 29, 62], [214, 65, 23, 62], [23, 129, 19, 62], [83, 129, 24, 62], [145, 129, 28, 62], [205, 129, 35, 62], [7, 193, 46, 62], [67, 193, 54, 62], [130, 193, 58, 62], [193, 193, 61, 62]];
     return _this;
   }
 
   _createClass(Coin, [{
+    key: "update",
+    value: function update() {
+      this.tickCount += 1;
+
+      if (this.tickCount > 15 * this.ticksPerFrame) {
+        this.tickCount = 0;
+      }
+
+      var index = Math.floor(this.tickCount / this.ticksPerFrame);
+      this.sX = this.frameIndicies[index][0];
+      this.sY = this.frameIndicies[index][1];
+      this.sWidth = this.frameIndicies[index][2];
+      this.sHeight = this.frameIndicies[index][3];
+      this.width = this.sWidth / 4;
+      this.height = this.sHeight / 4;
+    }
+  }, {
     key: "remove",
     value: function remove() {
       this.game.coins.delete(this);
+    }
+  }], [{
+    key: "new",
+    value: function _new(game, canvas) {
+      var range = Math.random() * (25 - 7) + 7;
+      var validStartX = Math.random() * (canvas.width - 15 - 16 - range) + (16 + range);
+      var validStartY = Math.random() * (canvas.height - 15 - 16 - range) + (16 + range);
+      var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
+      var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
+      return new Coin({
+        game: game,
+        sX: 2,
+        sY: 1,
+        sWidth: 61,
+        sHeight: 62,
+        startX: validStartX,
+        startY: validStartY,
+        speed: 0.3,
+        dX: 1,
+        width: 12,
+        height: 12,
+        range: range,
+        direction: direction,
+        switchDirection: switchDirection
+      });
     }
   }]);
 
@@ -415,7 +460,7 @@ function () {
     this.potions = options.potions || new Set();
     this.arrows = options.arrows || new Set();
     this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.potions))));
-    this.playerSpeed = 0.5;
+    this.playerSpeed = 1;
     this.projectileSpeed = 0.1;
     this.score = 0;
     this.over = false; //functions
@@ -455,28 +500,7 @@ function () {
   }, {
     key: "addCoin",
     value: function addCoin() {
-      var range = Math.random() * (25 - 7) + 7;
-      var validStartX = Math.random() * (this.canvas.width - 15 - 16 - range) + (16 + range);
-      var validStartY = Math.random() * (this.canvas.height - 15 - 16 - range) + (16 + range);
-      var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
-      var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
-      var coin = new _coin__WEBPACK_IMPORTED_MODULE_2__["default"]({
-        game: this,
-        sX: 6,
-        sY: 6,
-        sWidth: 60,
-        sHeight: 60,
-        startX: validStartX,
-        startY: validStartY,
-        speed: 0.3,
-        dX: 1,
-        width: 5,
-        height: 5,
-        range: range,
-        direction: direction,
-        switchDirection: switchDirection
-      });
-      this.coins.add(coin);
+      this.coins.add(_coin__WEBPACK_IMPORTED_MODULE_2__["default"].new(this, this.canvas));
       this.updateGameObjects();
     }
   }, {
@@ -561,7 +585,8 @@ function () {
         }
 
         this.gameObjects.forEach(function (object) {
-          return object.draw(ctx);
+          object.draw(ctx);
+          object.update();
         });
         this.detectCollisions();
       }
@@ -686,6 +711,9 @@ function (_GameObject) {
     _this.posY = _this.startY + _this.dY * _this.speed;
     _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.move = _this.move.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.tickCount = 0;
+    _this.ticksPerFrame = 15;
+    _this.update = _this.update.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
@@ -694,6 +722,7 @@ function (_GameObject) {
     value: function draw(ctx) {
       ctx.drawImage(this.image, this.sX, this.sY, this.sWidth, this.sHeight, this.posX, this.posY, this.width, this.height);
       this.move();
+      this.update();
     }
   }, {
     key: "collides",
@@ -703,6 +732,10 @@ function (_GameObject) {
   }, {
     key: "move",
     value: function move() {// redefined in each child class since they'll have unique patterns
+    }
+  }, {
+    key: "update",
+    value: function update() {// called in draw???
     }
   }]);
 
