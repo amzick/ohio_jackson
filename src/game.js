@@ -1,31 +1,66 @@
+import Player from './player';
 import Collectable from './collectable';
+import Coin from './coin';
 import Projectile from './projectile';
 
 class Game {
 
   constructor(options) {
-    this.score = 0;
     this.canvas = options.canvas;
     // import default player?
-    this.player = options.player; 
-    this.coins = options.coins || [];
-    this.arrows = options.arrows || [];
-    this.potions = options.potions || [];
-    this.gameObjects = [].concat(this.coins, this.arrows, this.potions);
+    // this.player = options.player; 
+    this.coins = options.coins || new Set();
+    this.potions = options.potions || new Set();
+    this.arrows = options.arrows || new Set();
+    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.potions]));
+
+    this.playerSpeed = 0.5;
     this.projectileSpeed = 0.1;
 
+    this.score = 0;
+    this.over = false;
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
+  }
+
+  addPlayer() {
+    const frog = new Image();
+    frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
+    const player = new Player({
+      game: this,
+      canvas: this.canvas,
+      image: frog,
+      sX: 24,
+      sY: 21,
+      sWidth: 13,
+      sHeight: 10,
+      startX: this.canvas.width / 2,
+      startY: this.canvas.height / 2,
+      speed: this.playerSpeed,
+      width: 13,
+      height: 10
+    });
+    this.player = player;
   }
 
   detectCollisions() {
     for (let i = 0; i < this.gameObjects.length; i++) {
       const obj = this.gameObjects[i];
       if (this.player.isCollidingWith(obj)) {
+        
         this.player.hits(obj);
-        this.score++;
-        console.log(obj instanceof Collectable);
+        if (obj instanceof Collectable) {
+          this.score++;
+        }
+        else if (obj instanceof Projectile) {
+          this.player.health -= 0.01;
+          if (this.player.health <= 0) {
+            this.over = true;
+            window.alert("You lose");
+            document.location.reload();
+          }
+        }
       }
     }
   }
@@ -69,11 +104,17 @@ class Game {
   }
 
   draw(ctx) {
-    this.drawInfo(ctx);
-    this.player.draw(ctx);
-    
-    this.gameObjects.forEach(object => object.draw(ctx));
-    this.detectCollisions();
+    if (!this.player) {
+      this.addPlayer();
+    }
+
+    if (!this.over) {
+      this.drawInfo(ctx);
+      this.player.draw(ctx);
+
+      this.gameObjects.forEach(object => object.draw(ctx));
+      this.detectCollisions();
+    }
   }
 
 }

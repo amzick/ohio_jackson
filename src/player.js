@@ -1,4 +1,6 @@
 import Moveable from './moveable';
+import Collectable from './collectable';
+import Coin from './coin';
 
 class Player extends Moveable {
   constructor(options) {
@@ -15,8 +17,10 @@ class Player extends Moveable {
   }
 
   hits(object) {
-    if (typeof object === 'Collectable') {
-      console.log("Frog hits a coin");
+    console.log("Player is hitting");
+    if (object instanceof Coin) {
+      debugger
+      object.remove();
     }
   }
 

@@ -1,6 +1,7 @@
 import Game from './game';
 import Player from './player';
 import Collectable from './collectable';
+import Coin from './coin';
 import Projectile from './projectile';
 
 // goals:
@@ -18,27 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
   gameCanvas.height = 224;
   const ctx = gameCanvas.getContext('2d');
 
-  const frog = new Image();
-  frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
-  const player = new Player({
-    canvas: gameCanvas,
-    image: frog,
-    sX: 24,
-    sY: 21,
-    sWidth: 13,
-    sHeight: 10,
-    startX: gameCanvas.width / 2,
-    startY: gameCanvas.height / 2,
-    speed: 0.5,
-    width: 13,
-    height: 10
-  });
-
   const coinImg = new Image();
   coinImg.src = 'https://www.spriters-resource.com/resources/sheets/107/109971.png';
-  const coin = new Collectable({
+  const coin = new Coin({
     canvas: gameCanvas,
-    image: coinImg,
     sX: 6,
     sY: 6,
     sWidth: 60,
@@ -89,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   const game = new Game({
     canvas: gameCanvas,
-    player,
     coins: [coin, coin2],
     arrows: [testFire]
   });

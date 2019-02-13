@@ -86,6 +86,68 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/coin.js":
+/*!*********************!*\
+  !*** ./src/coin.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+var Coin =
+/*#__PURE__*/
+function (_Collectable) {
+  _inherits(Coin, _Collectable);
+
+  function Coin(options) {
+    var _this;
+
+    _classCallCheck(this, Coin);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Coin).call(this, options));
+    var coinImg = new Image();
+    coinImg.src = 'https://www.spriters-resource.com/resources/sheets/107/109971.png';
+    _this.image = coinImg;
+    return _this;
+  }
+
+  _createClass(Coin, [{
+    key: "remove",
+    value: function remove() {
+      debugger;
+      this.game.coins.delete(this);
+    }
+  }]);
+
+  return Coin;
+}(_collectable__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Coin);
+
+/***/ }),
+
 /***/ "./src/collectable.js":
 /*!****************************!*\
   !*** ./src/collectable.js ***!
@@ -134,6 +196,11 @@ function (_Moveable) {
   }
 
   _createClass(Collectable, [{
+    key: "remove",
+    value: function remove() {
+      console.log("Removing collectable");
+    }
+  }, {
     key: "move",
     value: function move() {
       this.posX = this.startX + this.dX * this.speed;
@@ -181,13 +248,6 @@ function (_Moveable) {
         }
       }
     }
-  }, {
-    key: "hits",
-    value: function hits(object) {
-      if (typeof object === 'Player') {
-        console.log("Frog hits a coin");
-      }
-    }
   }]);
 
   return Collectable;
@@ -209,7 +269,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
 /* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./player */ "./src/player.js");
 /* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
-/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+/* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
+/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+
 
 
 
@@ -227,26 +289,10 @@ document.addEventListener("DOMContentLoaded", function () {
   gameCanvas.width = 320;
   gameCanvas.height = 224;
   var ctx = gameCanvas.getContext('2d');
-  var frog = new Image();
-  frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
-  var player = new _player__WEBPACK_IMPORTED_MODULE_1__["default"]({
-    canvas: gameCanvas,
-    image: frog,
-    sX: 24,
-    sY: 21,
-    sWidth: 13,
-    sHeight: 10,
-    startX: gameCanvas.width / 2,
-    startY: gameCanvas.height / 2,
-    speed: 0.5,
-    width: 13,
-    height: 10
-  });
   var coinImg = new Image();
   coinImg.src = 'https://www.spriters-resource.com/resources/sheets/107/109971.png';
-  var coin = new _collectable__WEBPACK_IMPORTED_MODULE_2__["default"]({
+  var coin = new _coin__WEBPACK_IMPORTED_MODULE_3__["default"]({
     canvas: gameCanvas,
-    image: coinImg,
     sX: 6,
     sY: 6,
     sWidth: 60,
@@ -276,7 +322,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   var snake = new Image();
   snake.src = "https://www.spriters-resource.com/resources/sheets/84/87238.png";
-  var testFire = new _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]({
+  var testFire = new _projectile__WEBPACK_IMPORTED_MODULE_4__["default"]({
     canvas: gameCanvas,
     image: snake,
     sX: 83,
@@ -291,7 +337,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   var game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
     canvas: gameCanvas,
-    player: player,
     coins: [coin, coin2],
     arrows: [testFire]
   });
@@ -317,13 +362,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
-/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
+/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
+/* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
+/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
 
 
 
@@ -334,21 +391,44 @@ function () {
   function Game(options) {
     _classCallCheck(this, Game);
 
-    this.score = 0;
     this.canvas = options.canvas; // import default player?
+    // this.player = options.player; 
 
-    this.player = options.player;
-    this.coins = options.coins || [];
-    this.arrows = options.arrows || [];
-    this.potions = options.potions || [];
-    this.gameObjects = [].concat(this.coins, this.arrows, this.potions);
-    this.projectileSpeed = 0.1; //functions
+    this.coins = options.coins || new Set();
+    this.potions = options.potions || new Set();
+    this.arrows = options.arrows || new Set();
+    this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.potions))));
+    this.playerSpeed = 0.5;
+    this.projectileSpeed = 0.1;
+    this.score = 0;
+    this.over = false; //functions
 
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
   }
 
   _createClass(Game, [{
+    key: "addPlayer",
+    value: function addPlayer() {
+      var frog = new Image();
+      frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
+      var player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"]({
+        game: this,
+        canvas: this.canvas,
+        image: frog,
+        sX: 24,
+        sY: 21,
+        sWidth: 13,
+        sHeight: 10,
+        startX: this.canvas.width / 2,
+        startY: this.canvas.height / 2,
+        speed: this.playerSpeed,
+        width: 13,
+        height: 10
+      });
+      this.player = player;
+    }
+  }, {
     key: "detectCollisions",
     value: function detectCollisions() {
       for (var i = 0; i < this.gameObjects.length; i++) {
@@ -356,8 +436,18 @@ function () {
 
         if (this.player.isCollidingWith(obj)) {
           this.player.hits(obj);
-          this.score++;
-          console.log(obj instanceof _collectable__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+          if (obj instanceof _collectable__WEBPACK_IMPORTED_MODULE_1__["default"]) {
+            this.score++;
+          } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]) {
+            this.player.health -= 0.01;
+
+            if (this.player.health <= 0) {
+              this.over = true;
+              window.alert("You lose");
+              document.location.reload();
+            }
+          }
         }
       }
     }
@@ -407,12 +497,18 @@ function () {
   }, {
     key: "draw",
     value: function draw(ctx) {
-      this.drawInfo(ctx);
-      this.player.draw(ctx);
-      this.gameObjects.forEach(function (object) {
-        return object.draw(ctx);
-      });
-      this.detectCollisions();
+      if (!this.player) {
+        this.addPlayer();
+      }
+
+      if (!this.over) {
+        this.drawInfo(ctx);
+        this.player.draw(ctx);
+        this.gameObjects.forEach(function (object) {
+          return object.draw(ctx);
+        });
+        this.detectCollisions();
+      }
     }
   }]);
 
@@ -571,6 +667,8 @@ function (_GameObject) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _moveable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./moveable */ "./src/moveable.js");
+/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
+/* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -588,6 +686,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+
 
 
 
@@ -616,8 +716,11 @@ function (_Moveable) {
   _createClass(Player, [{
     key: "hits",
     value: function hits(object) {
-      if (typeof object === 'Collectable') {
-        console.log("Frog hits a coin");
+      console.log("Player is hitting");
+
+      if (object instanceof _coin__WEBPACK_IMPORTED_MODULE_2__["default"]) {
+        debugger;
+        object.remove();
       }
     }
   }, {

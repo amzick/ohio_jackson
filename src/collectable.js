@@ -8,6 +8,10 @@ class Collectable extends Moveable {
     this.switchDirection = false;
   }
 
+  remove() {
+    console.log("Removing collectable");
+  }
+
   move() {
     this.posX = this.startX + (this.dX * this.speed);
     this.posY = this.startY + (this.dY * this.speed);
@@ -55,11 +59,6 @@ class Collectable extends Moveable {
     }
   }
 
-  hits(object) {
-    if (typeof object === 'Player') {
-      console.log("Frog hits a coin");
-    }
-  }
 }
 
 export default Collectable;
