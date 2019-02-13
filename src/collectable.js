@@ -54,6 +54,12 @@ class Collectable extends Moveable {
       }
     }
   }
+
+  hits(object) {
+    if (typeof object === 'Player') {
+      console.log("Frog hits a coin");
+    }
+  }
 }
 
 export default Collectable;

@@ -181,6 +181,13 @@ function (_Moveable) {
         }
       }
     }
+  }, {
+    key: "hits",
+    value: function hits(object) {
+      if (typeof object === 'Player') {
+        console.log("Frog hits a coin");
+      }
+    }
   }]);
 
   return Collectable;
@@ -204,6 +211,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
 
 
+ // goals:
+// 1. write collides function for objects - collectables disappear
+// 2. write arrows to spam randomly from all sides
+// 3. write potion and coin collectable generators
+// 4. Game over?
+// 5. 
 
 document.addEventListener("DOMContentLoaded", function () {
   // set up the canvas
@@ -275,8 +288,8 @@ document.addEventListener("DOMContentLoaded", function () {
     speed: 0.1,
     width: 18,
     height: 17
-  });
-  gameObjects.push(player);
+  }); // gameObjects.push(player);
+
   gameObjects.push(coin);
   gameObjects.push(coin2);
   gameObjects.push(testFire); // should score be its own file..? or maybe what is entry now will become game
@@ -315,17 +328,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ctx.fill();
   }; // detect collisions
+  // const detectCollisions = (gameObjects) => {
+  //   for (let i = 0; i < gameObjects.length; i++) {
+  //     for (let j = 0; j < gameObjects.length; j++) {
+  //       const obj1 = gameObjects[i];
+  //       const obj2 = gameObjects[j];
+  //       if (obj1.isCollidingWith(obj2) && i !== j) {
+  //         obj1.hits(obj2);
+  //         console.log(obj1 instanceof Player);
+  //       }
+  //     }
+  //   }
+  // };
 
 
   var detectCollisions = function detectCollisions(gameObjects) {
     for (var i = 0; i < gameObjects.length; i++) {
-      for (var j = 0; j < gameObjects.length; j++) {
-        var obj1 = gameObjects[i];
-        var obj2 = gameObjects[j];
+      var obj = gameObjects[i];
 
-        if (obj1.collidesWith(obj2) && i !== j) {
-          console.log("collision detected");
-        }
+      if (player.isCollidingWith(obj)) {
+        player.hits(obj);
+        console.log(obj instanceof _collectable__WEBPACK_IMPORTED_MODULE_1__["default"]);
       }
     }
   }; // console.log(gameObjects);
@@ -347,6 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
     drawScore();
     drawHealth();
     drawHealthBar();
+    player.draw(ctx);
     gameObjects.forEach(function (object) {
       return object.draw(ctx);
     });
@@ -379,11 +403,15 @@ var GameObject =
 function () {
   function GameObject() {
     _classCallCheck(this, GameObject);
+
+    this.isCollidingWith = this.isCollidingWith.bind(this);
   }
 
   _createClass(GameObject, [{
-    key: "collidesWith",
-    value: function collidesWith(gameObject) {
+    key: "isCollidingWith",
+    value: function isCollidingWith(gameObject) {
+      var that = this;
+
       if (this.posX < gameObject.posX + gameObject.width && this.posX + this.width > gameObject.posX && this.posY < gameObject.posY + gameObject.height && this.posY + this.height > gameObject.posY) {
         return true;
       }
@@ -545,8 +573,11 @@ function (_Moveable) {
   }
 
   _createClass(Player, [{
-    key: "collides",
-    value: function collides() {// ??
+    key: "hits",
+    value: function hits(object) {
+      if (typeof object === 'Collectable') {
+        console.log("Frog hits a coin");
+      }
     }
   }, {
     key: "handleKeydown",

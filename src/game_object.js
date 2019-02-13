@@ -1,6 +1,11 @@
 class GameObject {
 
-  collidesWith(gameObject) {
+  constructor() {
+    this.isCollidingWith = this.isCollidingWith.bind(this);
+  }
+
+  isCollidingWith(gameObject) {
+    const that = this;
     if (
       (this.posX < (gameObject.posX + gameObject.width)) &&
         ((this.posX + this.width) > gameObject.posX ) &&

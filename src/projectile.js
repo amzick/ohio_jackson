@@ -14,6 +14,7 @@ class Projectile extends Moveable {
     this.move = this.move.bind(this);
   }
 
+
   move() {
     // generate a random number between 0 and 5 for the projecticle's x and y direction
     

@@ -2,6 +2,13 @@ import Player from './player';
 import Collectable from './collectable';
 import Projectile from './projectile';
 
+// goals:
+// 1. write collides function for objects - collectables disappear
+// 2. write arrows to spam randomly from all sides
+// 3. write potion and coin collectable generators
+// 4. Game over?
+// 5. 
+
 document.addEventListener("DOMContentLoaded", () => {
   // set up the canvas
   const gameCanvas = document.getElementById("game-canvas");
@@ -82,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     height: 17
   });
 
-  gameObjects.push(player);
+  // gameObjects.push(player);
   gameObjects.push(coin);
   gameObjects.push(coin2);
   gameObjects.push(testFire);
@@ -122,14 +129,26 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // detect collisions
+  // const detectCollisions = (gameObjects) => {
+  //   for (let i = 0; i < gameObjects.length; i++) {
+  //     for (let j = 0; j < gameObjects.length; j++) {
+  //       const obj1 = gameObjects[i];
+  //       const obj2 = gameObjects[j];
+  //       if (obj1.isCollidingWith(obj2) && i !== j) {
+          
+  //         obj1.hits(obj2);
+  //         console.log(obj1 instanceof Player);
+  //       }
+  //     }
+  //   }
+  // };
+
   const detectCollisions = (gameObjects) => {
-    for (let i = 0; i < gameObjects.length; i++) {
-      for (let j = 0; j < gameObjects.length; j++) {
-        const obj1 = gameObjects[i];
-        const obj2 = gameObjects[j];
-        if (obj1.collidesWith(obj2) && i !== j) {
-          console.log("collision detected");
-        }
+    for (let i=0; i < gameObjects.length; i++) {
+      const obj = gameObjects[i];
+      if (player.isCollidingWith(obj)) {
+        player.hits(obj);
+        console.log(obj instanceof Collectable);
       }
     }
   };
@@ -154,6 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     drawScore();
     drawHealth();
     drawHealthBar();
+    player.draw(ctx);
     gameObjects.forEach(object => object.draw(ctx));
     detectCollisions(gameObjects);
     // simpleDetect();

@@ -15,8 +15,10 @@ class Player extends Moveable {
     this.health = 1;
   }
 
-  collides() {
-    // ??
+  hits(object) {
+    if (typeof object === 'Collectable') {
+      console.log("Frog hits a coin");
+    }
   }
 
   handleKeydown(event) {
