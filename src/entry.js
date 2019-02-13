@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   const game = new Game({
     canvas: gameCanvas,
-    coins: [coin, coin2],
     arrows: [testFire]
   });
 

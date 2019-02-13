@@ -1,11 +1,23 @@
 body {
+  overflow: visable;
+
+}
+
+.body {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 canvas {
-  border: solid 1px black;
+  border: solid 5px #78a388;
   width: 800px;
   height: 600px;
   background: #848458;

@@ -22,12 +22,13 @@ class Game {
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
+    this.addCoin = this.addCoin.bind(this);
   }
 
   addPlayer() {
     const playerImg = new Image();
     // playerImg.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
-    playerImg.src ="https://www.spriters-resource.com/resources/sheets/107/110099.png";
+    playerImg.src = "https://www.spriters-resource.com/resources/sheets/107/110099.png";
     const player = new Player({
       game: this,
       canvas: this.canvas,
@@ -45,11 +46,42 @@ class Game {
     this.player = player;
   }
 
+  updateGameObjects() {
+    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.potions]));
+  }
+
+  addCoin() {
+    const range = Math.random() * (25-7) +7;
+    const validStartX = Math.random() * (this.canvas.width - 15 - 16 - range) + (16 + range);
+    const validStartY = Math.random() * (this.canvas.height - 15 - 16 - range) + (16 + range);
+    
+    const direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
+    const switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
+    const coin = new Coin({
+      game: this,
+      sX: 6,
+      sY: 6,
+      sWidth: 60,
+      sHeight: 60,
+      startX: validStartX,
+      startY: validStartY,
+      speed: 0.3,
+      dX: 1,
+      width: 5,
+      height: 5,
+      range,
+      direction,
+      switchDirection
+    });
+    this.coins.add(coin);
+    this.updateGameObjects();
+  }
+
   detectCollisions() {
     for (let i = 0; i < this.gameObjects.length; i++) {
       const obj = this.gameObjects[i];
       if (this.player.isCollidingWith(obj)) {
-        
+
         this.player.hits(obj);
         if (obj instanceof Collectable) {
           this.score++;
@@ -113,6 +145,9 @@ class Game {
       this.drawInfo(ctx);
       this.player.draw(ctx);
 
+      if (this.coins.size <= 20) {
+        this.addCoin();
+      }
       this.gameObjects.forEach(object => object.draw(ctx));
       this.detectCollisions();
     }

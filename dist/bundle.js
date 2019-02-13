@@ -337,7 +337,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   var game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
     canvas: gameCanvas,
-    coins: [coin, coin2],
     arrows: [testFire]
   });
   var jungleImg = new Image(); // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
@@ -423,6 +422,7 @@ function () {
 
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
+    this.addCoin = this.addCoin.bind(this);
   }
 
   _createClass(Game, [{
@@ -446,6 +446,38 @@ function () {
         height: 20
       });
       this.player = player;
+    }
+  }, {
+    key: "updateGameObjects",
+    value: function updateGameObjects() {
+      this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.potions))));
+    }
+  }, {
+    key: "addCoin",
+    value: function addCoin() {
+      var range = Math.random() * (25 - 7) + 7;
+      var validStartX = Math.random() * (this.canvas.width - 15 - 16 - range) + (16 + range);
+      var validStartY = Math.random() * (this.canvas.height - 15 - 16 - range) + (16 + range);
+      var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
+      var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
+      var coin = new _coin__WEBPACK_IMPORTED_MODULE_2__["default"]({
+        game: this,
+        sX: 6,
+        sY: 6,
+        sWidth: 60,
+        sHeight: 60,
+        startX: validStartX,
+        startY: validStartY,
+        speed: 0.3,
+        dX: 1,
+        width: 5,
+        height: 5,
+        range: range,
+        direction: direction,
+        switchDirection: switchDirection
+      });
+      this.coins.add(coin);
+      this.updateGameObjects();
     }
   }, {
     key: "detectCollisions",
@@ -523,6 +555,11 @@ function () {
       if (!this.over) {
         this.drawInfo(ctx);
         this.player.draw(ctx);
+
+        if (this.coins.size <= 20) {
+          this.addCoin();
+        }
+
         this.gameObjects.forEach(function (object) {
           return object.draw(ctx);
         });
