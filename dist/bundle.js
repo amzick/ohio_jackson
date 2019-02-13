@@ -206,12 +206,15 @@ function (_Moveable) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
-/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
-/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+/* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
+/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./player */ "./src/player.js");
+/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
+/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+
 
 
  // goals:
+// move stuff in 'entry' to 'game' class that can be passed into objects
 // 1. write collides function for objects - collectables disappear
 // 2. write arrows to spam randomly from all sides
 // 3. write potion and coin collectable generators
@@ -223,13 +226,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var gameCanvas = document.getElementById("game-canvas");
   gameCanvas.width = 320;
   gameCanvas.height = 224;
-  var ctx = gameCanvas.getContext('2d'); // this array will be used to check that all objects are colliding with each other
-
-  var gameObjects = []; // set up the player in the middle of the board
-
+  var ctx = gameCanvas.getContext('2d');
   var frog = new Image();
   frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
-  var player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"]({
+  var player = new _player__WEBPACK_IMPORTED_MODULE_1__["default"]({
     canvas: gameCanvas,
     image: frog,
     sX: 24,
@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   var coinImg = new Image();
   coinImg.src = 'https://www.spriters-resource.com/resources/sheets/107/109971.png';
-  var coin = new _collectable__WEBPACK_IMPORTED_MODULE_1__["default"]({
+  var coin = new _collectable__WEBPACK_IMPORTED_MODULE_2__["default"]({
     canvas: gameCanvas,
     image: coinImg,
     sX: 6,
@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
     width: 5,
     height: 5
   });
-  var coin2 = new _collectable__WEBPACK_IMPORTED_MODULE_1__["default"]({
+  var coin2 = new _collectable__WEBPACK_IMPORTED_MODULE_2__["default"]({
     canvas: gameCanvas,
     image: coinImg,
     sX: 6,
@@ -276,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   var snake = new Image();
   snake.src = "https://www.spriters-resource.com/resources/sheets/84/87238.png";
-  var testFire = new _projectile__WEBPACK_IMPORTED_MODULE_2__["default"]({
+  var testFire = new _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]({
     canvas: gameCanvas,
     image: snake,
     sX: 83,
@@ -288,98 +288,138 @@ document.addEventListener("DOMContentLoaded", function () {
     speed: 0.1,
     width: 18,
     height: 17
-  }); // gameObjects.push(player);
-
-  gameObjects.push(coin);
-  gameObjects.push(coin2);
-  gameObjects.push(testFire); // should score be its own file..? or maybe what is entry now will become game
-
-  var score = 0;
-
-  var drawScore = function drawScore() {
-    ctx.font = "12px Courier New";
-    ctx.fillStyle = "black";
-    ctx.fillText("Score: " + score, 10, 15);
-  };
-
-  var drawHealth = function drawHealth() {
-    ctx.font = "12px Courier New";
-    ctx.fillStyle = "black";
-    ctx.fillText("Health: ", gameCanvas.width - 125, 15);
-  };
-
-  var drawHealthBar = function drawHealthBar() {
-    ctx.beginPath();
-    ctx.rect(gameCanvas.width - 62, 5, 50, 12);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.closePath();
-    ctx.beginPath();
-    ctx.rect(gameCanvas.width - 61, 6, player.health * 47, 10);
-
-    if (player.health <= 0.3) {
-      ctx.fillStyle = 'red';
-    } else if (player.health <= 0.6) {
-      ctx.fillStyle = 'yellow';
-    } else {
-      ctx.fillStyle = 'green';
-    }
-
-    ctx.fill();
-  }; // detect collisions
-  // const detectCollisions = (gameObjects) => {
-  //   for (let i = 0; i < gameObjects.length; i++) {
-  //     for (let j = 0; j < gameObjects.length; j++) {
-  //       const obj1 = gameObjects[i];
-  //       const obj2 = gameObjects[j];
-  //       if (obj1.isCollidingWith(obj2) && i !== j) {
-  //         obj1.hits(obj2);
-  //         console.log(obj1 instanceof Player);
-  //       }
-  //     }
-  //   }
-  // };
-
-
-  var detectCollisions = function detectCollisions(gameObjects) {
-    for (var i = 0; i < gameObjects.length; i++) {
-      var obj = gameObjects[i];
-
-      if (player.isCollidingWith(obj)) {
-        player.hits(obj);
-        console.log(obj instanceof _collectable__WEBPACK_IMPORTED_MODULE_1__["default"]);
-      }
-    }
-  }; // console.log(gameObjects);
-  // render, draw every 10 ms
-  // var interval = setInterval(draw, 10);
-  // function draw() {
-  //   ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-  //   drawScore();
-  //   drawHealth();
-  //   drawHealthBar();
-  //   gameObjects.forEach((object) => object.draw(ctx));
-  //   detectCollisions(gameObjects);
-  // }
-
+  });
+  var game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
+    canvas: gameCanvas,
+    player: player,
+    coins: [coin, coin2],
+    arrows: [testFire]
+  });
 
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-    drawScore();
-    drawHealth();
-    drawHealthBar();
-    player.draw(ctx);
-    gameObjects.forEach(function (object) {
-      return object.draw(ctx);
-    });
-    detectCollisions(gameObjects); // simpleDetect();
+    game.draw(ctx);
   }
 
   animate();
 }); // movement:
 // https://www.kirupa.com/canvas/moving_shapes_canvas_keyboard.htm
+
+/***/ }),
+
+/***/ "./src/game.js":
+/*!*********************!*\
+  !*** ./src/game.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
+/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+var Game =
+/*#__PURE__*/
+function () {
+  function Game(options) {
+    _classCallCheck(this, Game);
+
+    this.score = 0;
+    this.canvas = options.canvas; // import default player?
+
+    this.player = options.player;
+    this.coins = options.coins || [];
+    this.arrows = options.arrows || [];
+    this.potions = options.potions || [];
+    this.gameObjects = [].concat(this.coins, this.arrows, this.potions);
+    this.projectileSpeed = 0.1; //functions
+
+    this.detectCollisions = this.detectCollisions.bind(this);
+    this.drawInfo = this.drawInfo.bind(this);
+  }
+
+  _createClass(Game, [{
+    key: "detectCollisions",
+    value: function detectCollisions() {
+      for (var i = 0; i < this.gameObjects.length; i++) {
+        var obj = this.gameObjects[i];
+
+        if (this.player.isCollidingWith(obj)) {
+          this.player.hits(obj);
+          this.score++;
+          console.log(obj instanceof _collectable__WEBPACK_IMPORTED_MODULE_0__["default"]);
+        }
+      }
+    }
+  }, {
+    key: "drawScore",
+    value: function drawScore(ctx) {
+      ctx.font = "12px Courier New";
+      ctx.fillStyle = "black";
+      ctx.fillText("Score: " + this.score, 10, 15);
+    }
+  }, {
+    key: "drawHealth",
+    value: function drawHealth(ctx) {
+      ctx.font = "12px Courier New";
+      ctx.fillStyle = "black";
+      ctx.fillText("Health: ", this.canvas.width - 125, 15);
+    }
+  }, {
+    key: "drawHealthBar",
+    value: function drawHealthBar(ctx) {
+      ctx.beginPath();
+      ctx.rect(this.canvas.width - 62, 5, 50, 12);
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.closePath();
+      ctx.beginPath();
+      ctx.rect(this.canvas.width - 61, 6, this.player.health * 47, 10);
+
+      if (this.player.health <= 0.3) {
+        ctx.fillStyle = 'red';
+      } else if (this.player.health <= 0.6) {
+        ctx.fillStyle = 'yellow';
+      } else {
+        ctx.fillStyle = 'green';
+      }
+
+      ctx.fill();
+    }
+  }, {
+    key: "drawInfo",
+    value: function drawInfo(ctx) {
+      this.drawScore(ctx);
+      this.drawHealth(ctx);
+      this.drawHealthBar(ctx);
+    }
+  }, {
+    key: "draw",
+    value: function draw(ctx) {
+      this.drawInfo(ctx);
+      this.player.draw(ctx);
+      this.gameObjects.forEach(function (object) {
+        return object.draw(ctx);
+      });
+      this.detectCollisions();
+    }
+  }]);
+
+  return Game;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (Game);
 
 /***/ }),
 
@@ -401,9 +441,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var GameObject =
 /*#__PURE__*/
 function () {
-  function GameObject() {
+  function GameObject(options) {
     _classCallCheck(this, GameObject);
 
+    this.game = options.game;
     this.isCollidingWith = this.isCollidingWith.bind(this);
   }
 

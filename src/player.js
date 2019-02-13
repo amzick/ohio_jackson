@@ -3,7 +3,6 @@ import Moveable from './moveable';
 class Player extends Moveable {
   constructor(options) {
     super(options);
-
     this.leftPressed = false;
     this.rightPressed = false;
     this.upPressed = false;

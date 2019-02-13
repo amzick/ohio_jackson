@@ -1,8 +1,10 @@
+import Game from './game';
 import Player from './player';
 import Collectable from './collectable';
 import Projectile from './projectile';
 
 // goals:
+// move stuff in 'entry' to 'game' class that can be passed into objects
 // 1. write collides function for objects - collectables disappear
 // 2. write arrows to spam randomly from all sides
 // 3. write potion and coin collectable generators
@@ -15,11 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
   gameCanvas.width = 320;
   gameCanvas.height = 224;
   const ctx = gameCanvas.getContext('2d');
-
-  // this array will be used to check that all objects are colliding with each other
-  const gameObjects = [];
-
-  // set up the player in the middle of the board
 
   const frog = new Image();
   frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
@@ -89,100 +86,21 @@ document.addEventListener("DOMContentLoaded", () => {
     height: 17
   });
 
-  // gameObjects.push(player);
-  gameObjects.push(coin);
-  gameObjects.push(coin2);
-  gameObjects.push(testFire);
-
-  // should score be its own file..? or maybe what is entry now will become game
-  const score = 0;
-  const drawScore = () => {
-    ctx.font = "12px Courier New";
-    ctx.fillStyle = "black";
-    ctx.fillText("Score: " + score, 10, 15);
-  };
-
-  const drawHealth = () => {
-    ctx.font = "12px Courier New";
-    ctx.fillStyle = "black";
-    ctx.fillText("Health: ", gameCanvas.width - 125, 15);
-  };
-
-  const drawHealthBar = () => {
-    ctx.beginPath();
-    ctx.rect(gameCanvas.width - 62, 5, 50, 12);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.closePath();
-
-    ctx.beginPath();
-    ctx.rect(gameCanvas.width - 61, 6, (player.health * 47), 10);
-    if (player.health <= 0.3) {
-      ctx.fillStyle = 'red';
-    } else if (player.health <= 0.6) {
-      ctx.fillStyle = 'yellow';
-    } else {
-      ctx.fillStyle = 'green';
-    }
-    ctx.fill();
-  };
-
-  // detect collisions
-  // const detectCollisions = (gameObjects) => {
-  //   for (let i = 0; i < gameObjects.length; i++) {
-  //     for (let j = 0; j < gameObjects.length; j++) {
-  //       const obj1 = gameObjects[i];
-  //       const obj2 = gameObjects[j];
-  //       if (obj1.isCollidingWith(obj2) && i !== j) {
-          
-  //         obj1.hits(obj2);
-  //         console.log(obj1 instanceof Player);
-  //       }
-  //     }
-  //   }
-  // };
-
-  const detectCollisions = (gameObjects) => {
-    for (let i=0; i < gameObjects.length; i++) {
-      const obj = gameObjects[i];
-      if (player.isCollidingWith(obj)) {
-        player.hits(obj);
-        console.log(obj instanceof Collectable);
-      }
-    }
-  };
-
-
-  // console.log(gameObjects);
-  // render, draw every 10 ms
-  // var interval = setInterval(draw, 10);
-  // function draw() {
-  //   ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-  //   drawScore();
-  //   drawHealth();
-  //   drawHealthBar();
-  //   gameObjects.forEach((object) => object.draw(ctx));
-  //   detectCollisions(gameObjects);
-  // }
-
+  
+  const game = new Game({
+    canvas: gameCanvas,
+    player,
+    coins: [coin, coin2],
+    arrows: [testFire]
+  });
 
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-    drawScore();
-    drawHealth();
-    drawHealthBar();
-    player.draw(ctx);
-    gameObjects.forEach(object => object.draw(ctx));
-    detectCollisions(gameObjects);
-    // simpleDetect();
+    game.draw(ctx);
   }
 
   animate();
-
-
-
 });
 
 

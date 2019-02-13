@@ -1,6 +1,8 @@
 class GameObject {
 
-  constructor() {
+  constructor(options) {
+    this.game = options.game;
+    
     this.isCollidingWith = this.isCollidingWith.bind(this);
   }
 
