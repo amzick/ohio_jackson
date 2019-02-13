@@ -5,6 +5,7 @@ import Coin from './coin';
 import Projectile from './projectile';
 
 // goals:
+// render walls and ground for canvas, put score info in seperate canvas object
 // move stuff in 'entry' to 'game' class that can be passed into objects
 // 1. write collides function for objects - collectables disappear
 // 2. write arrows to spam randomly from all sides
@@ -77,9 +78,27 @@ document.addEventListener("DOMContentLoaded", () => {
     arrows: [testFire]
   });
 
+  const jungleImg = new Image();
+  // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
+  jungleImg.src = "https://www.spriters-resource.com/resources/sheets/2/1633.png";
+
+  function drawBorder(ctx) {
+    // sides
+    for(let i = 0; i < 14; i++) {
+      ctx.drawImage(jungleImg, 1061, 363, 47, 51, 0,i*16,16,16);
+      ctx.drawImage(jungleImg,1061,363,47,51,gameCanvas.width-16,i*16,16,16);
+    }
+    // top and bottom
+    for(let i =0; i<20; i++) {
+      ctx.drawImage(jungleImg,1061,363,47,51,i*16,0,16,16);
+      ctx.drawImage(jungleImg,1061,363,47,51,i*16,gameCanvas.height-16,16,16);
+    }    
+  }
+
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+    drawBorder(ctx);
     game.draw(ctx);
   }
 

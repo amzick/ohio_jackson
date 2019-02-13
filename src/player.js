@@ -19,7 +19,6 @@ class Player extends Moveable {
   hits(object) {
     console.log("Player is hitting");
     if (object instanceof Coin) {
-      debugger
       object.remove();
     }
   }
@@ -58,20 +57,20 @@ class Player extends Moveable {
   move() {
     this.posX = this.startX + (this.dX * this.speed);
     this.posY = this.startY + (this.dY * this.speed);
-    if (this.leftPressed && this.posX > 0) {
+    if (this.leftPressed && this.posX > 16) {
       this.dX -= 1;
       // console.log("left!");
       // this.posX -= 1;
-    } else if (this.rightPressed && this.posX < (this.canvas.width - this.width)) {
+    } else if (this.rightPressed && this.posX < (this.canvas.width - 16 - this.width)) {
 
       this.dX += 1;
       // this.posX += 1;
 
     }
 
-    if (this.upPressed && this.posY > 0) {
+    if (this.upPressed && this.posY > 16) {
       this.dY -= 1;
-    } else if (this.downPressed && this.posY < (this.canvas.height - this.height)) {
+    } else if (this.downPressed && this.posY < (this.canvas.height - 16 - this.height)) {
       this.dY += 1;
     }
   }

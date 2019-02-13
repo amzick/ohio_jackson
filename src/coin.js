@@ -10,7 +10,7 @@ class Coin extends Collectable {
   }
 
   remove() {
-    debugger
+    
     this.game.coins.delete(this);
   }
 

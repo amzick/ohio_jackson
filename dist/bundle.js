@@ -136,7 +136,6 @@ function (_Collectable) {
   _createClass(Coin, [{
     key: "remove",
     value: function remove() {
-      debugger;
       this.game.coins.delete(this);
     }
   }]);
@@ -276,6 +275,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
  // goals:
+// render walls and ground for canvas, put score info in seperate canvas object
 // move stuff in 'entry' to 'game' class that can be passed into objects
 // 1. write collides function for objects - collectables disappear
 // 2. write arrows to spam randomly from all sides
@@ -340,10 +340,28 @@ document.addEventListener("DOMContentLoaded", function () {
     coins: [coin, coin2],
     arrows: [testFire]
   });
+  var jungleImg = new Image(); // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
+
+  jungleImg.src = "https://www.spriters-resource.com/resources/sheets/2/1633.png";
+
+  function drawBorder(ctx) {
+    // sides
+    for (var i = 0; i < 14; i++) {
+      ctx.drawImage(jungleImg, 1061, 363, 47, 51, 0, i * 16, 16, 16);
+      ctx.drawImage(jungleImg, 1061, 363, 47, 51, gameCanvas.width - 16, i * 16, 16, 16);
+    } // top and bottom
+
+
+    for (var _i = 0; _i < 20; _i++) {
+      ctx.drawImage(jungleImg, 1061, 363, 47, 51, _i * 16, 0, 16, 16);
+      ctx.drawImage(jungleImg, 1061, 363, 47, 51, _i * 16, gameCanvas.height - 16, 16, 16);
+    }
+  }
 
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+    drawBorder(ctx);
     game.draw(ctx);
   }
 
@@ -410,21 +428,22 @@ function () {
   _createClass(Game, [{
     key: "addPlayer",
     value: function addPlayer() {
-      var frog = new Image();
-      frog.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
+      var playerImg = new Image(); // playerImg.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
+
+      playerImg.src = "https://www.spriters-resource.com/resources/sheets/107/110099.png";
       var player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"]({
         game: this,
         canvas: this.canvas,
-        image: frog,
-        sX: 24,
+        image: playerImg,
+        sX: 19,
         sY: 21,
         sWidth: 13,
-        sHeight: 10,
+        sHeight: 20,
         startX: this.canvas.width / 2,
         startY: this.canvas.height / 2,
         speed: this.playerSpeed,
-        width: 13,
-        height: 10
+        width: 16,
+        height: 20
       });
       this.player = player;
     }
@@ -454,28 +473,28 @@ function () {
   }, {
     key: "drawScore",
     value: function drawScore(ctx) {
-      ctx.font = "12px Courier New";
-      ctx.fillStyle = "black";
-      ctx.fillText("Score: " + this.score, 10, 15);
+      ctx.font = "10px Courier New";
+      ctx.fillStyle = "white";
+      ctx.fillText("Score: " + this.score, 8, 12);
     }
   }, {
     key: "drawHealth",
     value: function drawHealth(ctx) {
       ctx.font = "12px Courier New";
-      ctx.fillStyle = "black";
-      ctx.fillText("Health: ", this.canvas.width - 125, 15);
+      ctx.fillStyle = "white";
+      ctx.fillText("Health: ", this.canvas.width - 125, 12);
     }
   }, {
     key: "drawHealthBar",
     value: function drawHealthBar(ctx) {
       ctx.beginPath();
-      ctx.rect(this.canvas.width - 62, 5, 50, 12);
-      ctx.strokeStyle = "black";
+      ctx.rect(this.canvas.width - 62, 3, 50, 10);
+      ctx.strokeStyle = "white";
       ctx.lineWidth = 3;
       ctx.stroke();
       ctx.closePath();
       ctx.beginPath();
-      ctx.rect(this.canvas.width - 61, 6, this.player.health * 47, 10);
+      ctx.rect(this.canvas.width - 61, 4, this.player.health * 47, 8);
 
       if (this.player.health <= 0.3) {
         ctx.fillStyle = 'red';
@@ -719,7 +738,6 @@ function (_Moveable) {
       console.log("Player is hitting");
 
       if (object instanceof _coin__WEBPACK_IMPORTED_MODULE_2__["default"]) {
-        debugger;
         object.remove();
       }
     }
@@ -762,16 +780,16 @@ function (_Moveable) {
       this.posX = this.startX + this.dX * this.speed;
       this.posY = this.startY + this.dY * this.speed;
 
-      if (this.leftPressed && this.posX > 0) {
+      if (this.leftPressed && this.posX > 16) {
         this.dX -= 1; // console.log("left!");
         // this.posX -= 1;
-      } else if (this.rightPressed && this.posX < this.canvas.width - this.width) {
+      } else if (this.rightPressed && this.posX < this.canvas.width - 16 - this.width) {
         this.dX += 1; // this.posX += 1;
       }
 
-      if (this.upPressed && this.posY > 0) {
+      if (this.upPressed && this.posY > 16) {
         this.dY -= 1;
-      } else if (this.downPressed && this.posY < this.canvas.height - this.height) {
+      } else if (this.downPressed && this.posY < this.canvas.height - 16 - this.height) {
         this.dY += 1;
       }
     }
