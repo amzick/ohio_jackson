@@ -26,6 +26,8 @@ class Game {
     this.maxPowerUps = options.maxPowerUps || 0;
     this.disablePowerUps = false;
     this.boosted = false; //in the boosted state I'll render a blue bar showing the remaining time left
+
+    this.paused = false;
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -38,7 +40,7 @@ class Game {
   updateGameObjects() {
     switch (true) {
       case (this.score < 10):
-        this.maxArrows = 10000;
+        this.maxArrows = 1;
         break;
       case (this.score < 20):
         this.maxArrows = 2;
@@ -202,12 +204,19 @@ class Game {
     ctx.fillText("Press Enter to Try Again", 16, (this.canvas.height / 2) + 64);
   }
 
+  drawPauseScreen(ctx) {
+    ctx.font = "50px Courier New";
+    ctx.fillStyle = "white";
+    ctx.fillText("PAUSED", this.canvas.width / 4 - 8, (this.canvas.height / 2) - 16);
+    ctx.fillText("GAME", this.canvas.width / 3 - 8, (this.canvas.height / 2) + 16);
+  }
+
   draw(ctx) {
     if (!this.player) {
       this.addPlayer();
     }
 
-    if (!this.over) {
+    if (!this.over && !this.paused) {
       this.drawInfo(ctx);
       this.player.draw(ctx);
 
@@ -232,8 +241,10 @@ class Game {
         object.update();
       });
       this.detectCollisions();
-    } else {
+    } else if (this.over) {
       this.drawGameOver(ctx);
+    } else if (this.paused) {
+      this.drawPauseScreen(ctx);
     }
   }
 

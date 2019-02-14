@@ -19,6 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas: gameCanvas,
   });
 
+  function togglePause(event) {
+    if (event.key === "Enter") {
+      game.paused ? game.paused = false : game.paused = true;
+    }
+  }
+
+  document.addEventListener("keydown",togglePause);
+
   const jungleImg = new Image();
   // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
   jungleImg.src = "https://www.spriters-resource.com/resources/sheets/2/1633.png";
@@ -48,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function animate() {
 
     if (game.over) {
+      document.removeEventListener("keydown", togglePause);
       game.drawGameOver(ctx);
       document.addEventListener("keyup", function x(event) {
         if (event.key === "Enter") {
@@ -55,7 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
             canvas: gameCanvas,
           });
           // removeEventListener only works with a named function?
-          event.target.removeEventListener("keyup",x);
+          document.removeEventListener("keyup",x);
+          document.addEventListener("keydown", togglePause);
           animate();
         }
       });

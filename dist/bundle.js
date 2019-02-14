@@ -332,6 +332,14 @@ document.addEventListener("DOMContentLoaded", function () {
   var game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
     canvas: gameCanvas
   });
+
+  function togglePause(event) {
+    if (event.key === "Enter") {
+      game.paused ? game.paused = false : game.paused = true;
+    }
+  }
+
+  document.addEventListener("keydown", togglePause);
   var jungleImg = new Image(); // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
 
   jungleImg.src = "https://www.spriters-resource.com/resources/sheets/2/1633.png";
@@ -363,6 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function animate() {
     if (game.over) {
+      document.removeEventListener("keydown", togglePause);
       game.drawGameOver(ctx);
       document.addEventListener("keyup", function x(event) {
         if (event.key === "Enter") {
@@ -370,7 +379,8 @@ document.addEventListener("DOMContentLoaded", function () {
             canvas: gameCanvas
           }); // removeEventListener only works with a named function?
 
-          event.target.removeEventListener("keyup", x);
+          document.removeEventListener("keyup", x);
+          document.addEventListener("keydown", togglePause);
           animate();
         }
       });
@@ -547,7 +557,8 @@ function () {
     this.maxPowerUps = options.maxPowerUps || 0;
     this.disablePowerUps = false;
     this.boosted = false; //in the boosted state I'll render a blue bar showing the remaining time left
-    //functions
+
+    this.paused = false; //functions
 
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -563,7 +574,7 @@ function () {
     value: function updateGameObjects() {
       switch (true) {
         case this.score < 10:
-          this.maxArrows = 10000;
+          this.maxArrows = 1;
           break;
 
         case this.score < 20:
@@ -750,13 +761,21 @@ function () {
       ctx.fillText("Press Enter to Try Again", 16, this.canvas.height / 2 + 64);
     }
   }, {
+    key: "drawPauseScreen",
+    value: function drawPauseScreen(ctx) {
+      ctx.font = "50px Courier New";
+      ctx.fillStyle = "white";
+      ctx.fillText("PAUSED", this.canvas.width / 4 - 8, this.canvas.height / 2 - 16);
+      ctx.fillText("GAME", this.canvas.width / 3 - 8, this.canvas.height / 2 + 16);
+    }
+  }, {
     key: "draw",
     value: function draw(ctx) {
       if (!this.player) {
         this.addPlayer();
       }
 
-      if (!this.over) {
+      if (!this.over && !this.paused) {
         this.drawInfo(ctx);
         this.player.draw(ctx);
 
@@ -781,8 +800,10 @@ function () {
           object.update();
         });
         this.detectCollisions();
-      } else {
+      } else if (this.over) {
         this.drawGameOver(ctx);
+      } else if (this.paused) {
+        this.drawPauseScreen(ctx);
       }
     }
   }]);
