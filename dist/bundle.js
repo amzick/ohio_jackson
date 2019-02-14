@@ -321,9 +321,6 @@ __webpack_require__.r(__webpack_exports__);
 
  // goals:
 // render walls and ground for canvas, put score info in seperate canvas object
-// move stuff in 'entry' to 'game' class that can be passed into objects
-// 1. write collides function for objects - collectables disappear
-// 2. write arrows to spam randomly from all sides
 // 3. write potion and coin collectable generators
 // 4. Game over?
 // 5. 
@@ -334,22 +331,6 @@ document.addEventListener("DOMContentLoaded", function () {
   gameCanvas.width = 320;
   gameCanvas.height = 224;
   var ctx = gameCanvas.getContext('2d');
-  var snake = new Image();
-  snake.src = "https://www.spriters-resource.com/resources/sheets/84/87238.png";
-  var arrowImg = new Image();
-  arrowImg.src = "https://s3.amazonaws.com/letsgoeros-dev/arrows.png";
-  var testFire = new _projectile__WEBPACK_IMPORTED_MODULE_4__["default"]({
-    canvas: gameCanvas,
-    sX: 41,
-    sY: 35,
-    sWidth: 3,
-    sHeight: 19,
-    startX: gameCanvas.width + 10,
-    startY: -10,
-    speed: Math.random() * (1 - 0.1) + 0.1,
-    width: 3,
-    height: 19
-  });
   var game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
     canvas: gameCanvas
   });
@@ -396,6 +377,104 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /***/ }),
 
+/***/ "./src/fruit.js":
+/*!**********************!*\
+  !*** ./src/fruit.js ***!
+  \**********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+var Fruit =
+/*#__PURE__*/
+function (_Collectable) {
+  _inherits(Fruit, _Collectable);
+
+  function Fruit(options) {
+    var _this;
+
+    _classCallCheck(this, Fruit);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Fruit).call(this, options));
+    var fruitImg = new Image();
+    fruitImg.src = "https://s3.amazonaws.com/letsgoeros-dev/fruit_alpha.png";
+    _this.image = fruitImg;
+    return _this;
+  }
+
+  _createClass(Fruit, [{
+    key: "update",
+    value: function update() {
+      this.tickCount++;
+
+      if (this.tickCount > 14 * this.ticksPerFrame) {
+        this.tickCount = 0;
+      }
+
+      var frame = Math.floor(this.tickCount / this.ticksPerFrame);
+      this.sX = frame * 16 + 2;
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      this.game.fruits.delete(this);
+    }
+  }], [{
+    key: "fresh",
+    value: function fresh(game) {
+      var range = Math.random() * (25 - 7) + 7;
+      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range) + (16 + range);
+      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range) + (16 + range);
+      var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
+      var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
+      return new Fruit({
+        game: game,
+        sX: 2,
+        sY: 0,
+        sWidth: 13,
+        sHeight: 15,
+        startX: validStartX,
+        startY: validStartY,
+        speed: 0.3,
+        dX: 1,
+        width: 9,
+        height: 10,
+        range: range,
+        direction: direction,
+        switchDirection: switchDirection
+      });
+    }
+  }]);
+
+  return Fruit;
+}(_collectable__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Fruit);
+
+/***/ }),
+
 /***/ "./src/game.js":
 /*!*********************!*\
   !*** ./src/game.js ***!
@@ -408,7 +487,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
 /* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
 /* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
-/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+/* harmony import */ var _fruit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./fruit */ "./src/fruit.js");
+/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -428,6 +508,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+
 var Game =
 /*#__PURE__*/
 function () {
@@ -438,14 +519,15 @@ function () {
     // this.player = options.player; 
 
     this.coins = options.coins || new Set();
-    this.potions = options.potions || new Set();
+    this.fruits = options.fruits || new Set();
     this.arrows = options.arrows || new Set();
-    this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.potions))));
+    this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.fruits))));
     this.playerSpeed = 1;
     this.projectileSpeed = 0.1;
     this.score = 0;
     this.over = false;
-    this.maxArrows = options.maxArrows || 1; //functions
+    this.maxArrows = options.maxArrows || 1;
+    this.maxFruits = options.maxFruits || 1; //functions
 
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -485,7 +567,7 @@ function () {
           break;
       }
 
-      this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.potions))));
+      this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.fruits))));
     }
   }, {
     key: "addCoin",
@@ -496,7 +578,13 @@ function () {
   }, {
     key: "addArrow",
     value: function addArrow() {
-      this.arrows.add(_projectile__WEBPACK_IMPORTED_MODULE_3__["default"].random(this));
+      this.arrows.add(_projectile__WEBPACK_IMPORTED_MODULE_4__["default"].random(this));
+      this.updateGameObjects();
+    }
+  }, {
+    key: "addFruit",
+    value: function addFruit() {
+      this.fruits.add(_fruit__WEBPACK_IMPORTED_MODULE_3__["default"].fresh(this));
       this.updateGameObjects();
     }
   }, {
@@ -514,7 +602,7 @@ function () {
             if (this.player.health < 1) {
               this.player.health += 0.01;
             }
-          } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]) {
+          } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_4__["default"]) {
             this.player.health -= 0.1;
 
             if (this.player.health <= 0) {
@@ -586,6 +674,10 @@ function () {
 
         if (this.arrows.size < this.maxArrows) {
           this.addArrow();
+        }
+
+        if (this.fruits.size < this.maxFruits) {
+          this.addFruit();
         }
 
         this.gameObjects.forEach(function (object) {

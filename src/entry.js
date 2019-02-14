@@ -6,9 +6,6 @@ import Projectile from './projectile';
 
 // goals:
 // render walls and ground for canvas, put score info in seperate canvas object
-// move stuff in 'entry' to 'game' class that can be passed into objects
-// 1. write collides function for objects - collectables disappear
-// 2. write arrows to spam randomly from all sides
 // 3. write potion and coin collectable generators
 // 4. Game over?
 // 5. 
@@ -19,26 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   gameCanvas.width = 320;
   gameCanvas.height = 224;
   const ctx = gameCanvas.getContext('2d');
-
-
-  const snake = new Image();
-  snake.src = "https://www.spriters-resource.com/resources/sheets/84/87238.png";
-  const arrowImg = new Image();
-  arrowImg.src = "https://s3.amazonaws.com/letsgoeros-dev/arrows.png";
-
-  const testFire = new Projectile({
-    canvas: gameCanvas,
-    sX: 41,
-    sY: 35,
-    sWidth: 3,
-    sHeight: 19,
-    startX: gameCanvas.width + 10,
-    startY: -10,
-    speed: Math.random() * (1 - 0.1) + 0.1,
-    width: 3,
-    height: 19
-  });
-
 
   const game = new Game({
     canvas: gameCanvas,

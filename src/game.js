@@ -1,6 +1,7 @@
 import Player from './player';
 import Collectable from './collectable';
 import Coin from './coin';
+import Fruit from './fruit';
 import Projectile from './projectile';
 
 class Game {
@@ -10,9 +11,9 @@ class Game {
     // import default player?
     // this.player = options.player; 
     this.coins = options.coins || new Set();
-    this.potions = options.potions || new Set();
+    this.fruits = options.fruits || new Set();
     this.arrows = options.arrows || new Set();
-    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.potions]));
+    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.fruits]));
 
     this.playerSpeed = 1;
     this.projectileSpeed = 0.1;
@@ -20,6 +21,7 @@ class Game {
     this.score = 0;
     this.over = false;
     this.maxArrows = options.maxArrows || 1;
+    this.maxFruits = options.maxFruits || 1;
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -50,7 +52,7 @@ class Game {
         this.maxArrows = 100000;
         break;
     }
-    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.potions]));
+    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.fruits]));
   }
 
   addCoin() {
@@ -60,6 +62,11 @@ class Game {
 
   addArrow() {
     this.arrows.add(Projectile.random(this));
+    this.updateGameObjects();
+  }
+
+  addFruit() {
+    this.fruits.add(Fruit.fresh(this));
     this.updateGameObjects();
   }
 
@@ -139,6 +146,10 @@ class Game {
 
       if (this.arrows.size < this.maxArrows) {
         this.addArrow();
+      }
+
+      if (this.fruits.size < this.maxFruits) {
+        this.addFruit();
       }
 
       this.gameObjects.forEach(object => {

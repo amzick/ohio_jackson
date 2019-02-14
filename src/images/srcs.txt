@@ -1,5 +1,7 @@
-player: https://www.spriters-resource.com/pc_computer/broforce/sheet/110099/
+player: https://www.spriters-resource.com/resources/sheets/17/18910.png
+  
 rings: https://www.spriters-resource.com/mobile/sonicrunners/sheet/81059/
+fruit: https://www.spriters-resource.com/game_boy_advance/crashband/sheet/19324/
 
-arrow: 
+arrow: https://www.spriters-resource.com/playstation/tod/sheet/23071/
 ground: https://www.spriters-resource.com/fullview/59176/
