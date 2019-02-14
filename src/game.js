@@ -26,24 +26,7 @@ class Game {
   }
 
   addPlayer() {
-    const playerImg = new Image();
-    // playerImg.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
-    playerImg.src = "https://www.spriters-resource.com/resources/sheets/107/110099.png";
-    const player = new Player({
-      game: this,
-      canvas: this.canvas,
-      image: playerImg,
-      sX: 19,
-      sY: 21,
-      sWidth: 13,
-      sHeight: 20,
-      startX: this.canvas.width / 2,
-      startY: this.canvas.height / 2,
-      speed: this.playerSpeed,
-      width: 16,
-      height: 20
-    });
-    this.player = player;
+    this.player = Player.ohio(this);
   }
 
   updateGameObjects() {

@@ -454,24 +454,7 @@ function () {
   _createClass(Game, [{
     key: "addPlayer",
     value: function addPlayer() {
-      var playerImg = new Image(); // playerImg.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
-
-      playerImg.src = "https://www.spriters-resource.com/resources/sheets/107/110099.png";
-      var player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"]({
-        game: this,
-        canvas: this.canvas,
-        image: playerImg,
-        sX: 19,
-        sY: 21,
-        sWidth: 13,
-        sHeight: 20,
-        startX: this.canvas.width / 2,
-        startY: this.canvas.height / 2,
-        speed: this.playerSpeed,
-        width: 16,
-        height: 20
-      });
-      this.player = player;
+      this.player = _player__WEBPACK_IMPORTED_MODULE_0__["default"].ohio(this);
     }
   }, {
     key: "updateGameObjects",
@@ -777,8 +760,7 @@ function (_GameObject) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _moveable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./moveable */ "./src/moveable.js");
-/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
-/* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
+/* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -800,7 +782,6 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 
 
-
 var Player =
 /*#__PURE__*/
 function (_Moveable) {
@@ -812,6 +793,10 @@ function (_Moveable) {
     _classCallCheck(this, Player);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Player).call(this, options));
+    var playerImg = new Image(); // playerImg.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
+
+    playerImg.src = "https://www.spriters-resource.com/resources/sheets/17/18910.png";
+    _this.image = playerImg;
     _this.leftPressed = false;
     _this.rightPressed = false;
     _this.upPressed = false;
@@ -879,6 +864,55 @@ function (_Moveable) {
       } else if (this.downPressed && this.posY < this.canvas.height - 16 - this.height) {
         this.dY += 1;
       }
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      this.tickCount += 1;
+
+      if (this.tickCount > 2 * this.ticksPerFrame) {
+        this.tickCount = 0;
+      }
+
+      var index = Math.floor(this.tickCount / this.ticksPerFrame);
+      var frameIndicies;
+
+      if (this.leftPressed) {
+        frameIndicies = [[1, 103, 22, 32], [25, 103, 22, 32], [49, 103, 21, 32]];
+      } else if (this.rightPressed) {
+        frameIndicies = [[73, 103, 22, 32], [97, 103, 22, 32], [102, 103, 21, 32]];
+      } else if (this.downPressed) {
+        frameIndicies = [[87, 137, 27, 32], [115, 137, 28, 32], [144, 137, 28, 32]];
+      } else if (this.upPressed) {
+        frameIndicies = [[0, 137, 28, 32], [29, 137, 28, 32], [58, 137, 28, 32]];
+      } else {
+        // when stationary
+        frameIndicies = [[57, 19, 22, 32], [57, 19, 22, 32], [57, 19, 22, 32]];
+      }
+
+      this.sX = frameIndicies[index][0];
+      this.sY = frameIndicies[index][1];
+      this.sWidth = frameIndicies[index][2];
+      this.sHeight = frameIndicies[index][3];
+      this.width = this.sWidth * (11 / 16);
+      this.height = this.sHeight * (11 / 16);
+    }
+  }], [{
+    key: "ohio",
+    value: function ohio(game) {
+      return new Player({
+        game: game,
+        canvas: game.canvas,
+        sX: 97,
+        sY: 103,
+        sWidth: 22,
+        sHeight: 32,
+        startX: game.canvas.width / 2,
+        startY: game.canvas.height / 2,
+        speed: game.playerSpeed,
+        width: 16,
+        height: 22
+      });
     }
   }]);
 

@@ -1,10 +1,15 @@
 import Moveable from './moveable';
-import Collectable from './collectable';
 import Coin from './coin';
 
 class Player extends Moveable {
   constructor(options) {
     super(options);
+
+    const playerImg = new Image();
+    // playerImg.src = 'https://www.spriters-resource.com/resources/sheets/86/88720.png';
+    playerImg.src = "https://www.spriters-resource.com/resources/sheets/17/18910.png";
+    this.image = playerImg;
+
     this.leftPressed = false;
     this.rightPressed = false;
     this.upPressed = false;
@@ -70,6 +75,69 @@ class Player extends Moveable {
     } else if (this.downPressed && this.posY < (this.canvas.height - 16 - this.height)) {
       this.dY += 1;
     }
+  }
+
+  update() {
+    this.tickCount += 1;
+    if (this.tickCount > (2 * this.ticksPerFrame)) {
+      this.tickCount = 0;
+    }
+    const index = Math.floor(this.tickCount / this.ticksPerFrame);
+    let frameIndicies;
+    if (this.leftPressed) {
+      frameIndicies = [
+        [1, 103, 22, 32],
+        [25, 103, 22, 32],
+        [49, 103, 21, 32]
+      ];
+    } else if (this.rightPressed) {
+      frameIndicies = [
+        [73, 103, 22, 32],
+        [97, 103, 22, 32],
+        [102, 103, 21, 32]
+      ];
+    } else if (this.downPressed) {
+      frameIndicies = [
+        [87, 137, 27, 32],
+        [115, 137, 28, 32],
+        [144, 137, 28, 32]
+      ];
+    } else if (this.upPressed) {
+      frameIndicies = [
+        [0, 137, 28, 32],
+        [29, 137, 28, 32],
+        [58, 137, 28, 32]
+      ];
+    } else {
+      // when stationary
+      frameIndicies = [
+        [57, 19, 22, 32],
+        [57, 19, 22, 32],
+        [57, 19, 22, 32]
+      ];
+    }
+    this.sX = frameIndicies[index][0];
+    this.sY = frameIndicies[index][1];
+    this.sWidth = frameIndicies[index][2];
+    this.sHeight = frameIndicies[index][3];
+    this.width = this.sWidth * (11 / 16);
+    this.height = this.sHeight * (11 / 16);
+  }
+
+  static ohio(game) {
+    return new Player({
+      game,
+      canvas: game.canvas,
+      sX: 97,
+      sY: 103,
+      sWidth: 22,
+      sHeight: 32,
+      startX: game.canvas.width / 2,
+      startY: game.canvas.height / 2,
+      speed: game.playerSpeed,
+      width: 16,
+      height: 22
+    });
   }
 }
 
