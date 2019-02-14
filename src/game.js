@@ -1,8 +1,8 @@
 import Player from './player';
-import Collectable from './collectable';
 import Coin from './coin';
 import Fruit from './fruit';
 import Projectile from './projectile';
+import SpeedBoost from './speed_boost';
 
 class Game {
 
@@ -11,9 +11,10 @@ class Game {
     // import default player?
     // this.player = options.player; 
     this.coins = options.coins || new Set();
-    this.fruits = options.fruits || new Set();
     this.arrows = options.arrows || new Set();
-    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.fruits]));
+    this.fruits = options.fruits || new Set();
+    this.powerUps = options.powerUps || new Set();
+    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.fruits, ...this.powerUps]));
 
     this.playerSpeed = 1;
     this.projectileSpeed = 0.1;
@@ -22,6 +23,9 @@ class Game {
     this.over = false;
     this.maxArrows = options.maxArrows || 1;
     this.maxFruits = options.maxFruits || 1;
+    this.maxPowerUps = options.maxPowerUps || 0;
+    this.disablePowerUps = false;
+    this.boosted = false; //in the boosted state I'll render a blue bar showing the remaining time left
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -41,18 +45,21 @@ class Game {
         break;
       case (this.score < 30):
         this.maxArrows = 5;
+        this.maxFruits = 2;
         break;
       case (this.score < 50):
         this.maxArrows = 8;
+        this.maxPowerUps = 1;
         break;
       case (this.score < 75):
         this.maxArrows = 10;
+        this.maxFruits = 3;
         break;
       default:
         this.maxArrows = 100000;
         break;
     }
-    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.fruits]));
+    this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.fruits, ...this.powerUps]));
   }
 
   addCoin() {
@@ -70,24 +77,55 @@ class Game {
     this.updateGameObjects();
   }
 
+  addSpeedBoost() {
+    this.powerUps.add(SpeedBoost.generate(this));
+    this.updateGameObjects();
+  }
+
   detectCollisions() {
     for (let i = 0; i < this.gameObjects.length; i++) {
       const obj = this.gameObjects[i];
       if (this.player.isCollidingWith(obj)) {
         this.player.hits(obj);
-        if (obj instanceof Collectable) {
+        if (obj instanceof Coin) {
           this.score++;
           if (this.player.health < 1) {
             this.player.health += 0.01;
           }
-        }
-        else if (obj instanceof Projectile) {
+        } else if (obj instanceof Fruit) {
+          if (this.player.health <= 0.9) {
+            this.player.health += 0.1;
+          } else {
+            this.player.health = 1;
+          }
+        } else if (obj instanceof Projectile) {
           this.player.health -= 0.1;
           if (this.player.health <= 0) {
             this.over = true;
             window.alert("You lose");
             document.location.reload();
           }
+        } else if (obj instanceof SpeedBoost) {
+          this.disablePowerUps = true;
+          // I'm doing this so I can render a bar
+          this.powerUpTime = 10000;
+          this.boosted = true;
+          // ten seconds of speed boost, 15 seconds of no powerups
+          this.maxPowerUps = 0;
+          this.player.speed *= 2;
+          // had a bug where the speed changed caused the character to leap off the screen,
+          // since the position is partially the calculation of the change from the start times the speed, this quick reset helps.. a little
+          this.player.dX /= 3;
+          // dY doesn't like being divided by 2 ...
+          this.player.dY /= 1.5;
+          window.setTimeout(() => {
+            this.player.speed /= 2;
+            this.boosted = false;
+          }, 10000);
+          window.setTimeout(() => {
+            this.maxPowerUps = 1;
+            this.disablePowerUps = false;
+          }, 15000);
         }
       }
     }
@@ -100,21 +138,21 @@ class Game {
   }
 
   drawHealth(ctx) {
-    ctx.font = "12px Courier New";
+    ctx.font = "10px Courier New";
     ctx.fillStyle = "white";
     ctx.fillText("Health: ", this.canvas.width - 125, 12);
   }
 
   drawHealthBar(ctx) {
     ctx.beginPath();
-    ctx.rect(this.canvas.width - 62, 3, 50, 10);
+    ctx.rect(this.canvas.width - 72, 3, 50, 10);
     ctx.strokeStyle = "white";
     ctx.lineWidth = 3;
     ctx.stroke();
     ctx.closePath();
 
     ctx.beginPath();
-    ctx.rect(this.canvas.width - 61, 4, (this.player.health * 47), 8);
+    ctx.rect(this.canvas.width - 71, 4, (this.player.health * 47), 8);
     if (this.player.health <= 0.3) {
       ctx.fillStyle = 'red';
     } else if (this.player.health <= 0.6) {
@@ -125,10 +163,34 @@ class Game {
     ctx.fill();
   }
 
+  drawBoost(ctx) {
+    ctx.font = "10px Courier New";
+    ctx.fillStyle = "#16ffd0";
+    ctx.fillText("Boost: ", 70, 12);
+  }
+
+  drawBoostBar(ctx) {
+    ctx.beginPath();
+    ctx.rect(109, 3, 50, 10);
+    ctx.strokeStyle = "#f50fd0";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.fillStyle = "#16ffd0";
+    ctx.fillRect(110, 4, (this.powerUpTime / 10000) * 47, 8);
+  }
+
   drawInfo(ctx) {
     this.drawScore(ctx);
     this.drawHealth(ctx);
     this.drawHealthBar(ctx);
+
+    if (this.boosted) {
+      this.powerUpTime -= 17;
+      this.drawBoost(ctx);
+      this.drawBoostBar(ctx);
+    }
   }
 
   draw(ctx) {
@@ -150,6 +212,10 @@ class Game {
 
       if (this.fruits.size < this.maxFruits) {
         this.addFruit();
+      }
+
+      if (this.powerUps.size < this.maxPowerUps && !this.disablePowerUps) {
+        this.addSpeedBoost();
       }
 
       this.gameObjects.forEach(object => {

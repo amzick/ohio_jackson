@@ -485,10 +485,10 @@ function (_Collectable) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
-/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
-/* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
-/* harmony import */ var _fruit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./fruit */ "./src/fruit.js");
-/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+/* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
+/* harmony import */ var _fruit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./fruit */ "./src/fruit.js");
+/* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+/* harmony import */ var _speed_boost__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./speed_boost */ "./src/speed_boost.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -519,15 +519,20 @@ function () {
     // this.player = options.player; 
 
     this.coins = options.coins || new Set();
-    this.fruits = options.fruits || new Set();
     this.arrows = options.arrows || new Set();
-    this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.fruits))));
+    this.fruits = options.fruits || new Set();
+    this.powerUps = options.powerUps || new Set();
+    this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.fruits), _toConsumableArray(this.powerUps))));
     this.playerSpeed = 1;
     this.projectileSpeed = 0.1;
     this.score = 0;
     this.over = false;
     this.maxArrows = options.maxArrows || 1;
-    this.maxFruits = options.maxFruits || 1; //functions
+    this.maxFruits = options.maxFruits || 1;
+    this.maxPowerUps = options.maxPowerUps || 0;
+    this.disablePowerUps = false;
+    this.boosted = false; //in the boosted state I'll render a blue bar showing the remaining time left
+    //functions
 
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -552,14 +557,17 @@ function () {
 
         case this.score < 30:
           this.maxArrows = 5;
+          this.maxFruits = 2;
           break;
 
         case this.score < 50:
           this.maxArrows = 8;
+          this.maxPowerUps = 1;
           break;
 
         case this.score < 75:
           this.maxArrows = 10;
+          this.maxFruits = 3;
           break;
 
         default:
@@ -567,42 +575,56 @@ function () {
           break;
       }
 
-      this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.fruits))));
+      this.gameObjects = Array.from(new Set([].concat(_toConsumableArray(this.coins), _toConsumableArray(this.arrows), _toConsumableArray(this.fruits), _toConsumableArray(this.powerUps))));
     }
   }, {
     key: "addCoin",
     value: function addCoin() {
-      this.coins.add(_coin__WEBPACK_IMPORTED_MODULE_2__["default"].random(this));
+      this.coins.add(_coin__WEBPACK_IMPORTED_MODULE_1__["default"].random(this));
       this.updateGameObjects();
     }
   }, {
     key: "addArrow",
     value: function addArrow() {
-      this.arrows.add(_projectile__WEBPACK_IMPORTED_MODULE_4__["default"].random(this));
+      this.arrows.add(_projectile__WEBPACK_IMPORTED_MODULE_3__["default"].random(this));
       this.updateGameObjects();
     }
   }, {
     key: "addFruit",
     value: function addFruit() {
-      this.fruits.add(_fruit__WEBPACK_IMPORTED_MODULE_3__["default"].fresh(this));
+      this.fruits.add(_fruit__WEBPACK_IMPORTED_MODULE_2__["default"].fresh(this));
+      this.updateGameObjects();
+    }
+  }, {
+    key: "addSpeedBoost",
+    value: function addSpeedBoost() {
+      this.powerUps.add(_speed_boost__WEBPACK_IMPORTED_MODULE_4__["default"].generate(this));
       this.updateGameObjects();
     }
   }, {
     key: "detectCollisions",
     value: function detectCollisions() {
+      var _this = this;
+
       for (var i = 0; i < this.gameObjects.length; i++) {
         var obj = this.gameObjects[i];
 
         if (this.player.isCollidingWith(obj)) {
           this.player.hits(obj);
 
-          if (obj instanceof _collectable__WEBPACK_IMPORTED_MODULE_1__["default"]) {
+          if (obj instanceof _coin__WEBPACK_IMPORTED_MODULE_1__["default"]) {
             this.score++;
 
             if (this.player.health < 1) {
               this.player.health += 0.01;
             }
-          } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_4__["default"]) {
+          } else if (obj instanceof _fruit__WEBPACK_IMPORTED_MODULE_2__["default"]) {
+            if (this.player.health <= 0.9) {
+              this.player.health += 0.1;
+            } else {
+              this.player.health = 1;
+            }
+          } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]) {
             this.player.health -= 0.1;
 
             if (this.player.health <= 0) {
@@ -610,6 +632,27 @@ function () {
               window.alert("You lose");
               document.location.reload();
             }
+          } else if (obj instanceof _speed_boost__WEBPACK_IMPORTED_MODULE_4__["default"]) {
+            this.disablePowerUps = true; // I'm doing this so I can render a bar
+
+            this.powerUpTime = 10000;
+            this.boosted = true; // ten seconds of speed boost, 15 seconds of no powerups
+
+            this.maxPowerUps = 0;
+            this.player.speed *= 2; // had a bug where the speed changed caused the character to leap off the screen,
+            // since the position is partially the calculation of the change from the start times the speed, this quick reset helps.. a little
+
+            this.player.dX /= 3; // dY doesn't like being divided by 2 ...
+
+            this.player.dY /= 1.5;
+            window.setTimeout(function () {
+              _this.player.speed /= 2;
+              _this.boosted = false;
+            }, 10000);
+            window.setTimeout(function () {
+              _this.maxPowerUps = 1;
+              _this.disablePowerUps = false;
+            }, 15000);
           }
         }
       }
@@ -624,7 +667,7 @@ function () {
   }, {
     key: "drawHealth",
     value: function drawHealth(ctx) {
-      ctx.font = "12px Courier New";
+      ctx.font = "10px Courier New";
       ctx.fillStyle = "white";
       ctx.fillText("Health: ", this.canvas.width - 125, 12);
     }
@@ -632,13 +675,13 @@ function () {
     key: "drawHealthBar",
     value: function drawHealthBar(ctx) {
       ctx.beginPath();
-      ctx.rect(this.canvas.width - 62, 3, 50, 10);
+      ctx.rect(this.canvas.width - 72, 3, 50, 10);
       ctx.strokeStyle = "white";
       ctx.lineWidth = 3;
       ctx.stroke();
       ctx.closePath();
       ctx.beginPath();
-      ctx.rect(this.canvas.width - 61, 4, this.player.health * 47, 8);
+      ctx.rect(this.canvas.width - 71, 4, this.player.health * 47, 8);
 
       if (this.player.health <= 0.3) {
         ctx.fillStyle = 'red';
@@ -651,11 +694,36 @@ function () {
       ctx.fill();
     }
   }, {
+    key: "drawBoost",
+    value: function drawBoost(ctx) {
+      ctx.font = "10px Courier New";
+      ctx.fillStyle = "#16ffd0";
+      ctx.fillText("Boost: ", 70, 12);
+    }
+  }, {
+    key: "drawBoostBar",
+    value: function drawBoostBar(ctx) {
+      ctx.beginPath();
+      ctx.rect(109, 3, 50, 10);
+      ctx.strokeStyle = "#f50fd0";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.closePath();
+      ctx.fillStyle = "#16ffd0";
+      ctx.fillRect(110, 4, this.powerUpTime / 10000 * 47, 8);
+    }
+  }, {
     key: "drawInfo",
     value: function drawInfo(ctx) {
       this.drawScore(ctx);
       this.drawHealth(ctx);
       this.drawHealthBar(ctx);
+
+      if (this.boosted) {
+        this.powerUpTime -= 17;
+        this.drawBoost(ctx);
+        this.drawBoostBar(ctx);
+      }
     }
   }, {
     key: "draw",
@@ -678,6 +746,10 @@ function () {
 
         if (this.fruits.size < this.maxFruits) {
           this.addFruit();
+        }
+
+        if (this.powerUps.size < this.maxPowerUps && !this.disablePowerUps) {
+          this.addSpeedBoost();
         }
 
         this.gameObjects.forEach(function (object) {
@@ -852,7 +924,6 @@ function (_GameObject) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _moveable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./moveable */ "./src/moveable.js");
-/* harmony import */ var _coin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./coin */ "./src/coin.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -870,7 +941,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 
 
 
@@ -1212,6 +1282,110 @@ function (_Moveable) {
 }(_moveable__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (Projectile);
+
+/***/ }),
+
+/***/ "./src/speed_boost.js":
+/*!****************************!*\
+  !*** ./src/speed_boost.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _collectable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./collectable */ "./src/collectable.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+var SpeedBoost =
+/*#__PURE__*/
+function (_Collectable) {
+  _inherits(SpeedBoost, _Collectable);
+
+  function SpeedBoost(options) {
+    var _this;
+
+    _classCallCheck(this, SpeedBoost);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SpeedBoost).call(this, options));
+    var img = new Image();
+    img.src = "https://s3.amazonaws.com/letsgoeros-dev/powerups_alpha.png";
+    _this.image = img;
+    _this.frameIndicies = [[359, 63, 15, 15], [371, 50, 11, 15], [386, 61, 11, 15], [396, 50, 7, 10], [409, 63, 7, 10], [412, 77, 11, 15], [387, 77, 15, 15], [365, 79, 11, 12]];
+    return _this;
+  }
+
+  _createClass(SpeedBoost, [{
+    key: "update",
+    value: function update() {
+      this.tickCount += 1;
+
+      if (this.tickCount > 7 * this.ticksPerFrame) {
+        this.tickCount = 0;
+      }
+
+      var index = Math.floor(this.tickCount / this.ticksPerFrame);
+      this.sX = this.frameIndicies[index][0];
+      this.sY = this.frameIndicies[index][1];
+      this.sWidth = this.frameIndicies[index][2];
+      this.sHeight = this.frameIndicies[index][3];
+      this.width = this.sWidth * (2 / 3);
+      this.height = this.sHeight * (2 / 3);
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      this.game.powerUps.delete(this);
+    }
+  }], [{
+    key: "generate",
+    value: function generate(game) {
+      var range = Math.random() * (25 - 7) + 7;
+      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range) + (16 + range);
+      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range) + (16 + range);
+      var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
+      var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
+      return new SpeedBoost({
+        game: game,
+        sX: 359,
+        sY: 63,
+        sWidth: 15,
+        sHeight: 15,
+        startX: validStartX,
+        startY: validStartY,
+        speed: 0.3,
+        dX: 1.5,
+        width: 10,
+        height: 10,
+        range: range,
+        direction: direction,
+        switchDirection: switchDirection
+      });
+    }
+  }]);
+
+  return SpeedBoost;
+}(_collectable__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (SpeedBoost);
 
 /***/ })
 

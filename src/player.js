@@ -1,5 +1,4 @@
 import Moveable from './moveable';
-import Coin from './coin';
 
 class Player extends Moveable {
   constructor(options) {
