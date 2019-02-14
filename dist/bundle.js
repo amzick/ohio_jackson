@@ -320,8 +320,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
  // goals:
-// render walls and ground for canvas, put score info in seperate canvas object
-// 3. write potion and coin collectable generators
 // 4. Game over?
 // 5. 
 
@@ -364,6 +362,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function animate() {
+    if (game.over) {
+      game.drawGameOver(ctx);
+      document.addEventListener("keyup", function x(event) {
+        if (event.key === "Enter") {
+          game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
+            canvas: gameCanvas
+          }); // removeEventListener only works with a named function?
+
+          event.target.removeEventListener("keyup", x);
+          animate();
+        }
+      });
+      return;
+    }
+
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     drawBorder(ctx);
@@ -371,7 +384,9 @@ document.addEventListener("DOMContentLoaded", function () {
     game.draw(ctx);
   }
 
-  animate();
+  if (!game.over) {
+    animate();
+  }
 }); // movement:
 // https://www.kirupa.com/canvas/moving_shapes_canvas_keyboard.htm
 
@@ -548,7 +563,7 @@ function () {
     value: function updateGameObjects() {
       switch (true) {
         case this.score < 10:
-          this.maxArrows = 1;
+          this.maxArrows = 10000;
           break;
 
         case this.score < 20:
@@ -628,9 +643,8 @@ function () {
             this.player.health -= 0.1;
 
             if (this.player.health <= 0) {
-              this.over = true;
-              window.alert("You lose");
-              document.location.reload();
+              this.over = true; // window.alert("You lose");
+              // document.location.reload();
             }
           } else if (obj instanceof _speed_boost__WEBPACK_IMPORTED_MODULE_4__["default"]) {
             this.disablePowerUps = true; // I'm doing this so I can render a bar
@@ -726,6 +740,16 @@ function () {
       }
     }
   }, {
+    key: "drawGameOver",
+    value: function drawGameOver(ctx) {
+      ctx.font = "50px Courier New";
+      ctx.fillStyle = "red";
+      ctx.fillText("GAME", this.canvas.width / 3 - 8, this.canvas.height / 2 - 16);
+      ctx.fillText("OVER", this.canvas.width / 3 - 8, this.canvas.height / 2 + 16);
+      ctx.font = "20px Courier New";
+      ctx.fillText("Press Enter to Try Again", 16, this.canvas.height / 2 + 64);
+    }
+  }, {
     key: "draw",
     value: function draw(ctx) {
       if (!this.player) {
@@ -757,6 +781,8 @@ function () {
           object.update();
         });
         this.detectCollisions();
+      } else {
+        this.drawGameOver(ctx);
       }
     }
   }]);

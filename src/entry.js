@@ -5,8 +5,6 @@ import Coin from './coin';
 import Projectile from './projectile';
 
 // goals:
-// render walls and ground for canvas, put score info in seperate canvas object
-// 3. write potion and coin collectable generators
 // 4. Game over?
 // 5. 
 
@@ -17,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   gameCanvas.height = 224;
   const ctx = gameCanvas.getContext('2d');
 
-  const game = new Game({
+  let game = new Game({
     canvas: gameCanvas,
   });
 
@@ -41,13 +39,29 @@ document.addEventListener("DOMContentLoaded", () => {
   ground.src = "https://www.spriters-resource.com/resources/sheets/56/59176.png";
   function drawGround(ctx) {
     for (let i = 1; i < 19; i++) {
-      for (let j = 1 ; j < 13; j++) {
-        ctx.drawImage(ground,762,267,28,28,i*16,j*16,16,16);
+      for (let j = 1; j < 13; j++) {
+        ctx.drawImage(ground, 762, 267, 28, 28, i * 16, j * 16, 16, 16);
       }
     }
   }
 
   function animate() {
+
+    if (game.over) {
+      game.drawGameOver(ctx);
+      document.addEventListener("keyup", function x(event) {
+        if (event.key === "Enter") {
+          game = new Game({
+            canvas: gameCanvas,
+          });
+          // removeEventListener only works with a named function?
+          event.target.removeEventListener("keyup",x);
+          animate();
+        }
+      });
+      return;
+    }
+    
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     drawBorder(ctx);
@@ -55,7 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
     game.draw(ctx);
   }
 
-  animate();
+  if (!game.over) {
+    animate();
+  }
 });
 
 

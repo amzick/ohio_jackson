@@ -38,7 +38,7 @@ class Game {
   updateGameObjects() {
     switch (true) {
       case (this.score < 10):
-        this.maxArrows = 1;
+        this.maxArrows = 10000;
         break;
       case (this.score < 20):
         this.maxArrows = 2;
@@ -102,8 +102,8 @@ class Game {
           this.player.health -= 0.1;
           if (this.player.health <= 0) {
             this.over = true;
-            window.alert("You lose");
-            document.location.reload();
+            // window.alert("You lose");
+            // document.location.reload();
           }
         } else if (obj instanceof SpeedBoost) {
           this.disablePowerUps = true;
@@ -193,6 +193,15 @@ class Game {
     }
   }
 
+  drawGameOver(ctx) {
+    ctx.font = "50px Courier New";
+    ctx.fillStyle = "red";
+    ctx.fillText("GAME", this.canvas.width / 3 - 8, (this.canvas.height / 2)-16);
+    ctx.fillText("OVER", this.canvas.width / 3 - 8, (this.canvas.height / 2) + 16);
+    ctx.font = "20px Courier New";
+    ctx.fillText("Press Enter to Try Again", 16, (this.canvas.height / 2) + 64);
+  }
+
   draw(ctx) {
     if (!this.player) {
       this.addPlayer();
@@ -223,6 +232,8 @@ class Game {
         object.update();
       });
       this.detectCollisions();
+    } else {
+      this.drawGameOver(ctx);
     }
   }
 
