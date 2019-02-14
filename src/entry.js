@@ -25,7 +25,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  document.addEventListener("keydown",togglePause);
+  function startGame(event) {
+    if (event.key === "Enter") {
+      document.removeEventListener("keydown", startGame);
+      document.addEventListener("keydown", togglePause);
+      game.begun ? game.begun = false : game.begun = true;
+    }
+  }
+
+  document.addEventListener("keydown", startGame);
 
   const jungleImg = new Image();
   // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
@@ -62,21 +70,27 @@ document.addEventListener("DOMContentLoaded", () => {
         if (event.key === "Enter") {
           game = new Game({
             canvas: gameCanvas,
+            begun: true
           });
           // removeEventListener only works with a named function?
-          document.removeEventListener("keyup",x);
+          document.removeEventListener("keyup", x);
           document.addEventListener("keydown", togglePause);
           animate();
         }
       });
       return;
     }
-    
+
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-    drawBorder(ctx);
-    drawGround(ctx);
-    game.draw(ctx);
+    if (game.begun) {
+      drawBorder(ctx);
+      drawGround(ctx);
+      game.draw(ctx);
+    } else {
+      game.drawStartScreen(ctx);
+      return;
+    }
   }
 
   if (!game.over) {

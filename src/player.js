@@ -60,13 +60,8 @@ class Player extends Moveable {
     this.posY = this.startY + (this.dY * this.speed);
     if (this.leftPressed && this.posX > 16) {
       this.dX -= 1;
-      // console.log("left!");
-      // this.posX -= 1;
     } else if (this.rightPressed && this.posX < (this.canvas.width - 16 - this.width)) {
-
       this.dX += 1;
-      // this.posX += 1;
-
     }
 
     if (this.upPressed && this.posY > 16) {

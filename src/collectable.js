@@ -9,7 +9,6 @@ class Collectable extends Moveable {
   }
 
   remove() {
-    console.log("Removing collectable");
   }
 
   move() {

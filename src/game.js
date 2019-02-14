@@ -28,6 +28,7 @@ class Game {
     this.boosted = false; //in the boosted state I'll render a blue bar showing the remaining time left
 
     this.paused = false;
+    this.begun = options.begun || false;
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
@@ -209,6 +210,26 @@ class Game {
     ctx.fillStyle = "white";
     ctx.fillText("PAUSED", this.canvas.width / 4 - 8, (this.canvas.height / 2) - 16);
     ctx.fillText("GAME", this.canvas.width / 3 - 8, (this.canvas.height / 2) + 16);
+  }
+
+  drawStartScreen(ctx) {
+    const portrait = new Image();
+    portrait.src = "https://www.sideshowtoy.com/wp-content/uploads/2016/03/indiana-jones-temple-of-doom-sixth-scale-feature-3914-2.jpg";
+    ctx.drawImage(portrait,0,0,990,600,0,0,320,224);
+    ctx.font = "50px Courier New";
+    ctx.fillStyle = "white";
+    ctx.fillText("OHIO", 8 - 8, 64);
+    ctx.fillText("JACKSON", 8 - 8, 96);
+    ctx.font = "15px Courier New";
+    ctx.fillText("and the Quest for El Dorado", 4, 114);
+    ctx.font = "10px Courier New";
+    ctx.fillText("Use the arrow keys to move", 4, 130);
+    ctx.fillText("Hit enter to pause the game", 4, 140);
+    ctx.fillText("Press m to toggle music",4,150);
+    ctx.font = "30px Courier New";
+    ctx.fillText("PRESS", 2, 180);
+    ctx.fillText("ENTER", 2, 200);
+    
   }
 
   draw(ctx) {
