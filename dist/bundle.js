@@ -254,8 +254,8 @@ function (_Collectable) {
     key: "random",
     value: function random(game) {
       var range = Math.random() * (25 - 7) + 7;
-      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range) + (16 + range);
-      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range) + (16 + range);
+      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range * 2) + (16 + range);
+      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range * 2) + (16 + range);
       var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
       var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
       return new Coin({
@@ -443,35 +443,43 @@ document.addEventListener("DOMContentLoaded", function () {
       document.removeEventListener("keydown", startGame);
       document.addEventListener("keydown", togglePause);
       game.begun ? game.begun = false : game.begun = true;
+      game.theme.playTheme();
     }
   }
 
   document.addEventListener("keydown", startGame);
   var jungleImg = new Image(); // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
+  // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/2/1633.png";
 
-  jungleImg.src = "https://www.spriters-resource.com/resources/sheets/2/1633.png";
+  jungleImg.src = "https://www.spriters-resource.com/resources/sheets/111/113659.png";
 
   function drawBorder(ctx) {
     // sides
     for (var i = 0; i < 14; i++) {
-      ctx.drawImage(jungleImg, 1061, 363, 47, 51, 0, i * 16, 16, 16);
-      ctx.drawImage(jungleImg, 1061, 363, 47, 51, gameCanvas.width - 16, i * 16, 16, 16);
+      // ctx.drawImage(jungleImg, 1061, 363, 47, 51, 0, i * 16, 16, 16);
+      // ctx.drawImage(jungleImg, 1061, 363, 47, 51, gameCanvas.width - 16, i * 16, 16, 16);
+      ctx.drawImage(jungleImg, 172, 508, 173, 232, 0, i * 16, 16, 16);
+      ctx.drawImage(jungleImg, 172, 508, 173, 232, gameCanvas.width - 16, i * 16, 16, 16);
     } // top and bottom
 
 
     for (var _i = 0; _i < 20; _i++) {
-      ctx.drawImage(jungleImg, 1061, 363, 47, 51, _i * 16, 0, 16, 16);
-      ctx.drawImage(jungleImg, 1061, 363, 47, 51, _i * 16, gameCanvas.height - 16, 16, 16);
+      // ctx.drawImage(jungleImg, 1061, 363, 47, 51, i * 16, 0, 16, 16);
+      // ctx.drawImage(jungleImg, 1061, 363, 47, 51, i * 16, gameCanvas.height - 16, 16, 16);
+      ctx.drawImage(jungleImg, 172, 508, 173, 232, _i * 16, 0, 16, 16);
+      ctx.drawImage(jungleImg, 172, 508, 173, 232, _i * 16, gameCanvas.height - 16, 16, 16);
     }
   }
 
-  var ground = new Image();
-  ground.src = "https://www.spriters-resource.com/resources/sheets/56/59176.png";
+  var ground = new Image(); // ground.src = "https://www.spriters-resource.com/resources/sheets/56/59176.png";
+
+  ground.src = "https://opengameart.org/sites/default/files/styles/medium/public/grass_1.png";
 
   function drawGround(ctx) {
-    for (var i = 1; i < 19; i++) {
-      for (var j = 1; j < 13; j++) {
-        ctx.drawImage(ground, 762, 267, 28, 28, i * 16, j * 16, 16, 16);
+    for (var i = 0; i < 17; i++) {
+      for (var j = 0; j < 12; j++) {
+        // ctx.drawImage(ground, 762, 267, 28, 28, i * 16, j * 16, 16, 16);
+        ctx.drawImage(ground, 0, 0, 512, 512, i * 16, j * 16, 128, 128);
       }
     }
   }
@@ -501,8 +509,8 @@ document.addEventListener("DOMContentLoaded", function () {
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
     if (game.begun) {
-      drawBorder(ctx);
       drawGround(ctx);
+      drawBorder(ctx);
       game.draw(ctx);
     } else {
       game.drawStartScreen(ctx);
@@ -586,8 +594,8 @@ function (_Collectable) {
     key: "fresh",
     value: function fresh(game) {
       var range = Math.random() * (25 - 7) + 7;
-      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range) + (16 + range);
-      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range) + (16 + range);
+      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range * 2) + (16 + range);
+      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range * 2) + (16 + range);
       var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
       var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
       return new Fruit({
@@ -670,6 +678,7 @@ function () {
     this.projectileSpeed = 0.1;
     this.score = 0;
     this.over = false;
+    this.maxCoins = options.maxCoins || 20;
     this.maxArrows = options.maxArrows || 1;
     this.maxFruits = options.maxFruits || 1;
     this.maxPowerUps = options.maxPowerUps || 0;
@@ -695,30 +704,52 @@ function () {
     value: function updateGameObjects() {
       switch (true) {
         case this.score < 10:
-          this.maxArrows = 100000;
+          this.maxArrows = 1;
           break;
 
-        case this.score < 20:
+        case this.score < 25:
           this.maxArrows = 2;
           break;
 
         case this.score < 30:
-          this.maxArrows = 5;
+          this.maxArrows = 3;
           this.maxFruits = 2;
           break;
 
         case this.score < 50:
-          this.maxArrows = 8;
+          this.maxArrows = 5;
           this.maxPowerUps = 1;
           break;
 
         case this.score < 75:
-          this.maxArrows = 10;
+          this.maxArrows = 8;
           this.maxFruits = 3;
+          break;
+
+        case this.score < 100:
+          this.maxArrows = 10;
+          break;
+
+        case this.score < 125:
+          this.maxArrows = 12;
+          break;
+
+        case this.score < 150:
+          this.maxArrows = 15;
+          this.maxFruits = 5;
+          break;
+
+        case this.score < 200:
+          this.maxArrows = 20;
+          break;
+
+        case this.score < 250:
+          this.maxArrows = 22;
           break;
 
         default:
           this.maxArrows = 100000;
+          this.maxCoins = 100000;
           break;
       }
 
@@ -775,8 +806,10 @@ function () {
               this.player.health = 1;
             }
           } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]) {
-            this.player.health -= 0.1;
-            if (!this.muted) new _audio__WEBPACK_IMPORTED_MODULE_5__["default"]().playHurt();
+            if (!this.boosted) {
+              this.player.health -= 0.1;
+              if (!this.muted) new _audio__WEBPACK_IMPORTED_MODULE_5__["default"]().playHurt();
+            }
 
             if (this.player.health <= 0) {
               if (!this.muted) new _audio__WEBPACK_IMPORTED_MODULE_5__["default"]().playDeath();
@@ -797,9 +830,11 @@ function () {
             this.player.dX /= 3; // dY doesn't like being divided by 2 ...
 
             this.player.dY /= 1.5;
+            this.theme.theme.playbackRate = 1.5;
             window.setTimeout(function () {
               _this.player.speed /= 2;
               _this.boosted = false;
+              _this.theme.theme.playbackRate = 1;
             }, 10000);
             window.setTimeout(function () {
               _this.maxPowerUps = 1;
@@ -926,7 +961,7 @@ function () {
         this.drawInfo(ctx);
         this.player.draw(ctx);
 
-        if (this.coins.size <= 20) {
+        if (this.coins.size <= this.maxCoins) {
           this.addCoin();
         }
 
@@ -1564,8 +1599,8 @@ function (_Collectable) {
     key: "generate",
     value: function generate(game) {
       var range = Math.random() * (25 - 7) + 7;
-      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range) + (16 + range);
-      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range) + (16 + range);
+      var validStartX = Math.random() * (game.canvas.width - 15 - 16 - range * 2) + (16 + range);
+      var validStartY = Math.random() * (game.canvas.height - 15 - 16 - range * 2) + (16 + range);
       var direction = ["V", "H"][Math.floor(Math.random() * (2 - 0) + 0)];
       var switchDirection = [true, false][Math.floor(Math.random() * (2 - 0) + 0)];
       return new SpeedBoost({

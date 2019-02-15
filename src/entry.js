@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.removeEventListener("keydown", startGame);
       document.addEventListener("keydown", togglePause);
       game.begun ? game.begun = false : game.begun = true;
+      game.theme.playTheme();
     }
   }
 
@@ -50,26 +51,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const jungleImg = new Image();
   // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/103/106034.png";
-  jungleImg.src = "https://www.spriters-resource.com/resources/sheets/2/1633.png";
+  // jungleImg.src = "https://www.spriters-resource.com/resources/sheets/2/1633.png";
+  jungleImg.src = "https://www.spriters-resource.com/resources/sheets/111/113659.png";
   function drawBorder(ctx) {
     // sides
     for (let i = 0; i < 14; i++) {
-      ctx.drawImage(jungleImg, 1061, 363, 47, 51, 0, i * 16, 16, 16);
-      ctx.drawImage(jungleImg, 1061, 363, 47, 51, gameCanvas.width - 16, i * 16, 16, 16);
+      // ctx.drawImage(jungleImg, 1061, 363, 47, 51, 0, i * 16, 16, 16);
+      // ctx.drawImage(jungleImg, 1061, 363, 47, 51, gameCanvas.width - 16, i * 16, 16, 16);
+      ctx.drawImage(jungleImg, 172, 508, 173, 232, 0, i * 16, 16, 16);
+      ctx.drawImage(jungleImg, 172, 508, 173, 232, gameCanvas.width - 16, i * 16, 16, 16);
     }
     // top and bottom
     for (let i = 0; i < 20; i++) {
-      ctx.drawImage(jungleImg, 1061, 363, 47, 51, i * 16, 0, 16, 16);
-      ctx.drawImage(jungleImg, 1061, 363, 47, 51, i * 16, gameCanvas.height - 16, 16, 16);
+      // ctx.drawImage(jungleImg, 1061, 363, 47, 51, i * 16, 0, 16, 16);
+      // ctx.drawImage(jungleImg, 1061, 363, 47, 51, i * 16, gameCanvas.height - 16, 16, 16);
+      ctx.drawImage(jungleImg, 172, 508, 173, 232, i * 16, 0, 16, 16);
+      ctx.drawImage(jungleImg, 172, 508, 173, 232, i * 16, gameCanvas.height - 16, 16, 16);
+      
     }
   }
 
   const ground = new Image();
-  ground.src = "https://www.spriters-resource.com/resources/sheets/56/59176.png";
+  // ground.src = "https://www.spriters-resource.com/resources/sheets/56/59176.png";
+  ground.src = "https://opengameart.org/sites/default/files/styles/medium/public/grass_1.png";
   function drawGround(ctx) {
-    for (let i = 1; i < 19; i++) {
-      for (let j = 1; j < 13; j++) {
-        ctx.drawImage(ground, 762, 267, 28, 28, i * 16, j * 16, 16, 16);
+    for (let i = 0; i < 17; i++) {
+      for (let j = 0; j < 12; j++) {
+        // ctx.drawImage(ground, 762, 267, 28, 28, i * 16, j * 16, 16, 16);
+        ctx.drawImage(ground, 0, 0, 512, 512, i * 16, j * 16, 128, 128);
       }
     }
   }
@@ -99,8 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     if (game.begun) {
-      drawBorder(ctx);
       drawGround(ctx);
+      drawBorder(ctx);
       game.draw(ctx);
     } else {
       game.drawStartScreen(ctx);

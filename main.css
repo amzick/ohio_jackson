@@ -17,9 +17,10 @@ body {
 }
 
 canvas {
-  border: solid 5px #78a388;
+  border: solid 5px orangered;
   width: 800px;
   height: 600px;
   /* background: #848458; */
-  background: #20312f;
+  /* background: #20312f; */
+  background: #305521;
 }

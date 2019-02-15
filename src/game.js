@@ -22,6 +22,7 @@ class Game {
 
     this.score = 0;
     this.over = false;
+    this.maxCoins = options.maxCoins || 20;
     this.maxArrows = options.maxArrows || 1;
     this.maxFruits = options.maxFruits || 1;
     this.maxPowerUps = options.maxPowerUps || 0;
@@ -36,7 +37,7 @@ class Game {
 
     this.theme = options.theme || new Audio(true);
     this.muted = options.muted || false;
-    
+
   }
 
   addPlayer() {
@@ -46,25 +47,42 @@ class Game {
   updateGameObjects() {
     switch (true) {
       case (this.score < 10):
-        this.maxArrows = 100000;
+        this.maxArrows = 1;
         break;
-      case (this.score < 20):
+      case (this.score < 25):
         this.maxArrows = 2;
         break;
       case (this.score < 30):
-        this.maxArrows = 5;
+        this.maxArrows = 3;
         this.maxFruits = 2;
         break;
       case (this.score < 50):
-        this.maxArrows = 8;
+        this.maxArrows = 5;
         this.maxPowerUps = 1;
         break;
       case (this.score < 75):
-        this.maxArrows = 10;
+        this.maxArrows = 8;
         this.maxFruits = 3;
+        break;
+      case (this.score < 100):
+        this.maxArrows = 10;
+        break;
+      case (this.score < 125):
+        this.maxArrows = 12;
+        break;
+      case (this.score < 150):
+        this.maxArrows = 15;
+        this.maxFruits = 5;
+        break;
+      case (this.score < 200):
+        this.maxArrows = 20;
+        break;
+      case (this.score < 250):
+        this.maxArrows = 22;
         break;
       default:
         this.maxArrows = 100000;
+        this.maxCoins = 100000;
         break;
     }
     this.gameObjects = Array.from(new Set([...this.coins, ...this.arrows, ...this.fruits, ...this.powerUps]));
@@ -109,8 +127,10 @@ class Game {
             this.player.health = 1;
           }
         } else if (obj instanceof Projectile) {
-          this.player.health -= 0.1;
-          if (!this.muted) new Audio().playHurt();
+          if (!this.boosted) {
+            this.player.health -= 0.1;
+            if (!this.muted) new Audio().playHurt();
+          }
           if (this.player.health <= 0) {
             if (!this.muted) new Audio().playDeath();
             this.theme.stopTheme();
@@ -130,9 +150,12 @@ class Game {
           this.player.dX /= 3;
           // dY doesn't like being divided by 2 ...
           this.player.dY /= 1.5;
+          this.theme.theme.playbackRate = 1.5;
           window.setTimeout(() => {
             this.player.speed /= 2;
             this.boosted = false;
+            this.theme.theme.playbackRate = 1;
+
           }, 10000);
           window.setTimeout(() => {
             this.maxPowerUps = 1;
@@ -250,7 +273,7 @@ class Game {
       this.drawInfo(ctx);
       this.player.draw(ctx);
 
-      if (this.coins.size <= 20) {
+      if (this.coins.size <= this.maxCoins) {
         this.addCoin();
       }
 
