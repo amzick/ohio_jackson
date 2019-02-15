@@ -9,19 +9,37 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.js"></script>
   <script src="dist/bundle.js"></script>
   <!--  jquery -->
+
+  <!-- favicon -->
+  <link rel="shortcut icon" href="https://s3.amazonaws.com/letsgoeros-dev/ohio-favicon.ico" type="image/x-icon">
+
+  <!-- fonts -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Staatliches" rel="stylesheet">
 </head>
-<body className="body">
-  <div className="title">
-    <h1>The Legend of Ohio Jackson</h1>
-    <!-- <p>(No Relation to Indiana Jones)</p> -->
-    <!-- <h4>And The Quest for El Dorado</h4> -->
+<body class="body">
+  <div class="title">
+    <h1>Ohio Jackson</h1>
+    <p>( No Relation to Indiana Jones )</p>
+    <h4>And The Quest for El Dorado</h4>
   </div>
-  <div>
-    <div>Controls</div>
-    <div>NavLinks</div>
-  </div>
-  <div>
-    <canvas id="game-canvas" />
+  <div class="content">
+      <div class="controls">
+        <p>Controls:</p>
+        <p>Arrows: Move</p>
+        <p>Enter: Pause</p>
+        <p>M: toggle sound</p>
+      </div>
+      <canvas id="game-canvas" ></canvas>
+      <div class="links">
+        <p>Game By:</p>
+        <p>Aaron Zick</p>
+        <p>Portfolio: <a href="https://amzick.github.io" target="_blank"><i class="fas fa-laptop"></i></a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/amzick/" target="_blank"><i class="fab fa-linkedin"></i></a></p>
+        <p>GitHub: <a href="https://github.com/amzick" target="_blank"><i class="fab fa-github"></i></a></p>
+        <p>AngelList: <a href="https://angel.co/aaron-zick?public_profile=1" target="_blank"><i class="fab fa-angellist"></i></a></p>
+      </div>
   </div>
 </body>
 </html>

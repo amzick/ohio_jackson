@@ -167,15 +167,15 @@ class Game {
   }
 
   drawScore(ctx) {
-    ctx.font = "10px Courier New";
+    ctx.font = "10px Staatliches";
     ctx.fillStyle = "white";
     ctx.fillText("Score: " + this.score, 8, 12);
   }
 
   drawHealth(ctx) {
-    ctx.font = "10px Courier New";
+    ctx.font = "10px Staatliches";
     ctx.fillStyle = "white";
-    ctx.fillText("Health: ", this.canvas.width - 125, 12);
+    ctx.fillText("Health: ", this.canvas.width - 112, 12);
   }
 
   drawHealthBar(ctx) {
@@ -199,7 +199,7 @@ class Game {
   }
 
   drawBoost(ctx) {
-    ctx.font = "10px Courier New";
+    ctx.font = "10px Staatliches";
     ctx.fillStyle = "#16ffd0";
     ctx.fillText("Boost: ", 70, 12);
   }
@@ -229,16 +229,16 @@ class Game {
   }
 
   drawGameOver(ctx) {
-    ctx.font = "50px Courier New";
-    ctx.fillStyle = "red";
-    ctx.fillText("GAME", this.canvas.width / 3 - 8, (this.canvas.height / 2) - 16);
-    ctx.fillText("OVER", this.canvas.width / 3 - 8, (this.canvas.height / 2) + 16);
-    ctx.font = "20px Courier New";
-    ctx.fillText("Press Enter to Try Again", 16, (this.canvas.height / 2) + 64);
+    ctx.font = "50px Staatliches";
+    ctx.fillStyle = "orangered";
+    ctx.fillText("GAME", this.canvas.width / 3, (this.canvas.height / 2) - 24);
+    ctx.fillText("OVER", this.canvas.width / 3, (this.canvas.height / 2) + 24);
+    ctx.font = "20px Staatliches";
+    ctx.fillText("Press Enter to Try Again", this.canvas.width / 5 + 8, (this.canvas.height / 2) + 64);
   }
 
   drawPauseScreen(ctx) {
-    ctx.font = "50px Courier New";
+    ctx.font = "50px Staatliches";
     ctx.fillStyle = "white";
     ctx.fillText("PAUSED", this.canvas.width / 4 - 8, (this.canvas.height / 2) - 16);
     ctx.fillText("GAME", this.canvas.width / 3 - 8, (this.canvas.height / 2) + 16);
@@ -248,19 +248,19 @@ class Game {
     const portrait = new Image();
     portrait.src = "https://www.sideshowtoy.com/wp-content/uploads/2016/03/indiana-jones-temple-of-doom-sixth-scale-feature-3914-2.jpg";
     ctx.drawImage(portrait, 0, 0, 990, 600, 0, 0, 320, 224);
-    ctx.font = "50px Courier New";
+    ctx.font = "50px Staatliches";
     ctx.fillStyle = "white";
-    ctx.fillText("OHIO", 8 - 8, 64);
-    ctx.fillText("JACKSON", 8 - 8, 96);
-    ctx.font = "15px Courier New";
-    ctx.fillText("and the Quest for El Dorado", 4, 114);
-    ctx.font = "10px Courier New";
-    ctx.fillText("Use the arrow keys to move", 4, 130);
-    ctx.fillText("Hit enter to pause the game", 4, 140);
-    ctx.fillText("Press m to toggle audio", 4, 150);
-    ctx.font = "30px Courier New";
-    ctx.fillText("PRESS", 2, 180);
-    ctx.fillText("ENTER", 2, 200);
+    ctx.fillText("OHIO", 8 , 50);
+    ctx.fillText("JACKSON", 4 , 90);
+    ctx.font = "15px Staatliches";
+    ctx.fillText("and the Quest for El Dorado", 8, 108);
+    ctx.font = "10px Staatliches";
+    ctx.fillText("Use the arrow keys to move", 8, 124);
+    ctx.fillText("Hit enter to pause the game", 8, 134);
+    ctx.fillText("Press m to toggle audio", 8, 144);
+    ctx.font = "30px Staatliches";
+    ctx.fillText("PRESS", 8, 182);
+    ctx.fillText("ENTER", 8, 208);
 
   }
 

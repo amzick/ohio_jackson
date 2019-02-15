@@ -1,26 +1,93 @@
 body {
-  overflow: visable;
-
-}
-
-.body {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-image: url("https://img05.deviantart.net/78e8/i/2015/125/7/3/the_hidden_city_of_el_dorado_by_nathanfowkesart-d8p54qb.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
 }
+
+
 
 .title {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-family: "Staatliches", sans-serif;
+  color: orangered;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.title > h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 20vh;
+  max-height: 20vh;
+}
+
+.title p {
+  margin: 0;
+  padding: 0;
+  font-size: 3vh;
+}
+
+.title h4 {
+  margin: 0;
+  padding: 0;
+  font-size: 5vh;
+}
+
+
+
+.content {
+  /* border: solid 10px pink; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  color: white;
+  font-family: "Staatliches", sans-serif;
+  letter-spacing: 1.5px;
+  width: 100%;
+  height: 66%;
+  margin-bottom: 5vh;
+  font-size: 3vh;
 }
 
 canvas {
   border: solid 5px orangered;
-  width: 800px;
-  height: 600px;
+  /* width: 90vh;
+  height: 67vh; */
+  width: 60%;
+  height: 100%;
   /* background: #848458; */
   /* background: #20312f; */
   background: #305521;
+}
+
+.controls {
+  /* border: solid 2px green; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: rgba(0,0,0,0.5);
+  width: 12%;
+}
+
+.links {
+  /* border: solid 2px yellow; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;  
+  background: rgba(0,0,0,0.5);
+  width: 12%;
+}
+
+a {
+  color: white;
 }
