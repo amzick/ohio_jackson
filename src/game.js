@@ -3,6 +3,7 @@ import Coin from './coin';
 import Fruit from './fruit';
 import Projectile from './projectile';
 import SpeedBoost from './speed_boost';
+import Audio from './audio';
 
 class Game {
 
@@ -32,6 +33,10 @@ class Game {
     //functions
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
+
+    this.theme = options.theme || new Audio(true);
+    this.muted = options.muted || false;
+    
   }
 
   addPlayer() {
@@ -41,7 +46,7 @@ class Game {
   updateGameObjects() {
     switch (true) {
       case (this.score < 10):
-        this.maxArrows = 1;
+        this.maxArrows = 100000;
         break;
       case (this.score < 20):
         this.maxArrows = 2;
@@ -92,10 +97,12 @@ class Game {
         this.player.hits(obj);
         if (obj instanceof Coin) {
           this.score++;
+          if (!this.muted) new Audio().playCoin();
           if (this.player.health < 1) {
             this.player.health += 0.01;
           }
         } else if (obj instanceof Fruit) {
+          if (!this.muted) new Audio().playFruit();
           if (this.player.health <= 0.9) {
             this.player.health += 0.1;
           } else {
@@ -103,12 +110,14 @@ class Game {
           }
         } else if (obj instanceof Projectile) {
           this.player.health -= 0.1;
+          if (!this.muted) new Audio().playHurt();
           if (this.player.health <= 0) {
+            if (!this.muted) new Audio().playDeath();
+            this.theme.stopTheme();
             this.over = true;
-            // window.alert("You lose");
-            // document.location.reload();
           }
         } else if (obj instanceof SpeedBoost) {
+          if (!this.muted) new Audio().playBoost();
           this.disablePowerUps = true;
           // I'm doing this so I can render a bar
           this.powerUpTime = 10000;
@@ -199,7 +208,7 @@ class Game {
   drawGameOver(ctx) {
     ctx.font = "50px Courier New";
     ctx.fillStyle = "red";
-    ctx.fillText("GAME", this.canvas.width / 3 - 8, (this.canvas.height / 2)-16);
+    ctx.fillText("GAME", this.canvas.width / 3 - 8, (this.canvas.height / 2) - 16);
     ctx.fillText("OVER", this.canvas.width / 3 - 8, (this.canvas.height / 2) + 16);
     ctx.font = "20px Courier New";
     ctx.fillText("Press Enter to Try Again", 16, (this.canvas.height / 2) + 64);
@@ -215,7 +224,7 @@ class Game {
   drawStartScreen(ctx) {
     const portrait = new Image();
     portrait.src = "https://www.sideshowtoy.com/wp-content/uploads/2016/03/indiana-jones-temple-of-doom-sixth-scale-feature-3914-2.jpg";
-    ctx.drawImage(portrait,0,0,990,600,0,0,320,224);
+    ctx.drawImage(portrait, 0, 0, 990, 600, 0, 0, 320, 224);
     ctx.font = "50px Courier New";
     ctx.fillStyle = "white";
     ctx.fillText("OHIO", 8 - 8, 64);
@@ -225,11 +234,11 @@ class Game {
     ctx.font = "10px Courier New";
     ctx.fillText("Use the arrow keys to move", 4, 130);
     ctx.fillText("Hit enter to pause the game", 4, 140);
-    ctx.fillText("Press m to toggle music",4,150);
+    ctx.fillText("Press m to toggle audio", 4, 150);
     ctx.font = "30px Courier New";
     ctx.fillText("PRESS", 2, 180);
     ctx.fillText("ENTER", 2, 200);
-    
+
   }
 
   draw(ctx) {
@@ -269,6 +278,16 @@ class Game {
     }
   }
 
+  toggleMute() {
+    if (this.muted) {
+      this.theme.theme.volume = 0.4;
+      this.muted = false;
+      this.theme.playTheme();
+    } else {
+      this.theme.theme.volume = 0;
+      this.muted = true;
+    }
+  }
 }
 
 export default Game;

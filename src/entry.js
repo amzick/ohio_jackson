@@ -17,7 +17,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let game = new Game({
     canvas: gameCanvas,
+    muted: false,
   });
+
+  game.theme.playTheme();
+
+  let mutedGame = false;
+  document.addEventListener("keyup", function mute(event) {
+    if (event.key === "m") {
+      game.toggleMute();
+      mutedGame ? mutedGame = false : mutedGame = true;
+    }
+  });
+
+
 
   function togglePause(event) {
     if (event.key === "Enter") {
@@ -70,8 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (event.key === "Enter") {
           game = new Game({
             canvas: gameCanvas,
-            begun: true
+            begun: true,
+            muted: mutedGame,
           });
+          if (!mutedGame) game.theme.playTheme();
           // removeEventListener only works with a named function?
           document.removeEventListener("keyup", x);
           document.addEventListener("keydown", togglePause);

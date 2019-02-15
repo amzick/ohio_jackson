@@ -86,6 +86,98 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/audio.js":
+/*!**********************!*\
+  !*** ./src/audio.js ***!
+  \**********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Audio =
+/*#__PURE__*/
+function () {
+  function Audio() {
+    var theme = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+    _classCallCheck(this, Audio);
+
+    if (theme) {
+      this.theme = document.createElement("audio");
+      this.theme.src = "https://s3.amazonaws.com/letsgoeros-dev/indiana-jones-theme-song-8-bit-remix-cover-version-8-bit-universe.mp3";
+      this.theme.loop = true;
+      this.theme.load();
+      this.theme.volume = 0.4;
+    }
+
+    this.coin = document.createElement("audio");
+    this.coin.src = "https://s3.amazonaws.com/letsgoeros-dev/sfx_coin.mp3";
+    this.coin.load();
+    this.fruit = document.createElement("audio");
+    this.fruit.src = "https://s3.amazonaws.com/letsgoeros-dev/sfx_get_fruit.wav";
+    this.fruit.load();
+    this.hurt = document.createElement("audio");
+    this.hurt.src = "https://s3.amazonaws.com/letsgoeros-dev/sfx_mc_hurt.wav";
+    this.hurt.load();
+    this.boost = document.createElement("audio");
+    this.boost.src = "https://s3.amazonaws.com/letsgoeros-dev/sfx_boost.mp3";
+    this.boost.load();
+    this.death = document.createElement("audio");
+    this.death.src = "https://s3.amazonaws.com/letsgoeros-dev/sfx_death.mp3";
+    this.death.load();
+  }
+
+  _createClass(Audio, [{
+    key: "playTheme",
+    value: function playTheme() {
+      this.theme.play();
+    }
+  }, {
+    key: "stopTheme",
+    value: function stopTheme() {
+      this.theme.pause();
+    }
+  }, {
+    key: "playCoin",
+    value: function playCoin() {
+      this.coin.play();
+    }
+  }, {
+    key: "playHurt",
+    value: function playHurt() {
+      this.hurt.play();
+    }
+  }, {
+    key: "playFruit",
+    value: function playFruit() {
+      this.fruit.play();
+    }
+  }, {
+    key: "playBoost",
+    value: function playBoost() {
+      this.boost.play();
+    }
+  }, {
+    key: "playDeath",
+    value: function playDeath() {
+      this.death.play();
+    }
+  }]);
+
+  return Audio;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (Audio);
+
+/***/ }),
+
 /***/ "./src/coin.js":
 /*!*********************!*\
   !*** ./src/coin.js ***!
@@ -328,7 +420,16 @@ document.addEventListener("DOMContentLoaded", function () {
   gameCanvas.height = 224;
   var ctx = gameCanvas.getContext('2d');
   var game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
-    canvas: gameCanvas
+    canvas: gameCanvas,
+    muted: false
+  });
+  game.theme.playTheme();
+  var mutedGame = false;
+  document.addEventListener("keyup", function mute(event) {
+    if (event.key === "m") {
+      game.toggleMute();
+      mutedGame ? mutedGame = false : mutedGame = true;
+    }
   });
 
   function togglePause(event) {
@@ -383,8 +484,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (event.key === "Enter") {
           game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]({
             canvas: gameCanvas,
-            begun: true
-          }); // removeEventListener only works with a named function?
+            begun: true,
+            muted: mutedGame
+          });
+          if (!mutedGame) game.theme.playTheme(); // removeEventListener only works with a named function?
 
           document.removeEventListener("keyup", x);
           document.addEventListener("keydown", togglePause);
@@ -527,6 +630,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fruit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./fruit */ "./src/fruit.js");
 /* harmony import */ var _projectile__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
 /* harmony import */ var _speed_boost__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./speed_boost */ "./src/speed_boost.js");
+/* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -540,6 +644,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -576,6 +681,8 @@ function () {
 
     this.detectCollisions = this.detectCollisions.bind(this);
     this.drawInfo = this.drawInfo.bind(this);
+    this.theme = options.theme || new _audio__WEBPACK_IMPORTED_MODULE_5__["default"](true);
+    this.muted = options.muted || false;
   }
 
   _createClass(Game, [{
@@ -588,7 +695,7 @@ function () {
     value: function updateGameObjects() {
       switch (true) {
         case this.score < 10:
-          this.maxArrows = 1;
+          this.maxArrows = 100000;
           break;
 
         case this.score < 20:
@@ -654,11 +761,14 @@ function () {
 
           if (obj instanceof _coin__WEBPACK_IMPORTED_MODULE_1__["default"]) {
             this.score++;
+            if (!this.muted) new _audio__WEBPACK_IMPORTED_MODULE_5__["default"]().playCoin();
 
             if (this.player.health < 1) {
               this.player.health += 0.01;
             }
           } else if (obj instanceof _fruit__WEBPACK_IMPORTED_MODULE_2__["default"]) {
+            if (!this.muted) new _audio__WEBPACK_IMPORTED_MODULE_5__["default"]().playFruit();
+
             if (this.player.health <= 0.9) {
               this.player.health += 0.1;
             } else {
@@ -666,12 +776,15 @@ function () {
             }
           } else if (obj instanceof _projectile__WEBPACK_IMPORTED_MODULE_3__["default"]) {
             this.player.health -= 0.1;
+            if (!this.muted) new _audio__WEBPACK_IMPORTED_MODULE_5__["default"]().playHurt();
 
             if (this.player.health <= 0) {
-              this.over = true; // window.alert("You lose");
-              // document.location.reload();
+              if (!this.muted) new _audio__WEBPACK_IMPORTED_MODULE_5__["default"]().playDeath();
+              this.theme.stopTheme();
+              this.over = true;
             }
           } else if (obj instanceof _speed_boost__WEBPACK_IMPORTED_MODULE_4__["default"]) {
+            if (!this.muted) new _audio__WEBPACK_IMPORTED_MODULE_5__["default"]().playBoost();
             this.disablePowerUps = true; // I'm doing this so I can render a bar
 
             this.powerUpTime = 10000;
@@ -797,7 +910,7 @@ function () {
       ctx.font = "10px Courier New";
       ctx.fillText("Use the arrow keys to move", 4, 130);
       ctx.fillText("Hit enter to pause the game", 4, 140);
-      ctx.fillText("Press m to toggle music", 4, 150);
+      ctx.fillText("Press m to toggle audio", 4, 150);
       ctx.font = "30px Courier New";
       ctx.fillText("PRESS", 2, 180);
       ctx.fillText("ENTER", 2, 200);
@@ -838,6 +951,18 @@ function () {
         this.drawGameOver(ctx);
       } else if (this.paused) {
         this.drawPauseScreen(ctx);
+      }
+    }
+  }, {
+    key: "toggleMute",
+    value: function toggleMute() {
+      if (this.muted) {
+        this.theme.theme.volume = 0.4;
+        this.muted = false;
+        this.theme.playTheme();
+      } else {
+        this.theme.theme.volume = 0;
+        this.muted = true;
       }
     }
   }]);
