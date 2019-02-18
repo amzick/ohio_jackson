@@ -927,8 +927,8 @@ function () {
     value: function drawPauseScreen(ctx) {
       ctx.font = "50px Staatliches";
       ctx.fillStyle = "white";
-      ctx.fillText("PAUSED", this.canvas.width / 4 - 8, this.canvas.height / 2 - 16);
-      ctx.fillText("GAME", this.canvas.width / 3 - 8, this.canvas.height / 2 + 16);
+      ctx.fillText("PAUSED", this.canvas.width / 3 - 24, this.canvas.height / 2 - 24);
+      ctx.fillText("GAME", this.canvas.width / 3 - 8, this.canvas.height / 2 + 24);
     }
   }, {
     key: "drawStartScreen",
