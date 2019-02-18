@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       return;
     }
-
+// test
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     if (game.begun) {

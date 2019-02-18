@@ -503,7 +503,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
       return;
-    }
+    } // test
+
 
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
