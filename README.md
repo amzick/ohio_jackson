@@ -2,26 +2,22 @@
 (<a href="https://aaronzick.com/ohio_jackson/" target="_blank">Live</a>)
 
 # Background and Overview
-Phonic the Toad Frog (name pending) is a simple version of Sonic the Hedgehog: an intuitive game that most people would recognize and instinctively. Game play would be moving left and right and jumping. There would be rings that the player can collect. The player must avoid obstacles. Touching an obstacle results in death unless the player has rings, in which case the player loses the rings but may continue playing.
+Ohio Jackson (no affiliation with Indiana Jones) is a simple, nostolgic browser video game built in JavaScript and rendered with the HTML5 Canvas API. I built player movement with event listeners and used requestAnimationFrame to render and animate colorful sprites. I leveraged Object Oriented Programming principles to write DRY, modular code, in order to flexibly and easily populate the game with projectiles and items in response to the player's score. By using sets to keep track of game objects I ensure efficient memory usage by quickly removing out of bounds items, allowing for smooth and fast game performance.
 
-The game is inspired by Sonic the Hedgehog.
-
-I'd like to do Minesweeper but it seems simplisitic board games are discouraged and I'd like to step out of my comfort zone and learn something new, but literally have no idea how to approach this.
-
+The game was originally inspired by Sonic the Hedgehog - you might recognize the rings. The player must dodge arrows that deplete their health, but there are plenty of healing fruits scattered across the playing field if they get into trouble. After the score gets high enough, a boost item will appear which doubles the player's speed and renders them impervious to damage for a limited time.
 
 # Functionality and MVP Features
 
 - Players can use left/right arrow keys to move left and right.
-- Players can use space or up to jump.
-- Obstacles and rings will be part of the level.
-- The game ends if the player collides with an obstacle and doesn't have any rings. If the player has rings the rings will be lost.
-- The player's score will be the amount of rings multiplied by a time multiplier based on the speed of completion.
+- Projectiles, rings, and other itmes will be part of the level.
+- The game ends if the player collides with arrows enough times to delete their health below zero.
+- The player's score will be the amount of rings the player has collected; the difficulty increases in correlation to the score.
 
 ## MVPS
 - Basic visuals and interactive interface.
 - Players can move the character.
-- Obstacles damage or kill the character. Charter will have a certain amount of lives and can gain more with a certain amount of rings
-- Either a few pre-built levels of increasing difficulty or an endless obstacle generator.
+- Projectiles damage or kill the character.
+- Either a few pre-built levels of increasing difficulty or an endless projectile generator.
 - Players can pause the game and mute the soundtrack.
 
 # Wireframes
@@ -35,7 +31,6 @@ The project will be implemented with:
 - HTML5 Canvas for DOM manipulation and rendering
 - Web Audio API for sound generation
 - Webpack
-- ??? 
 
 Files:
 - index.html: to hold everything
@@ -46,7 +41,7 @@ Files:
 - obstacle.js: handles obstacles. (various would inherit from this)
 - collectable.js: handles collectables (rings would inherit from this)
 - game.js: handles game logic
-- audio.js: ???
+- audio.js:
 
 
 # Implementation Timeline
