@@ -1,5 +1,5 @@
-# sonic_replica
-(Live)
+# Ohio Jackson - The Game!
+(<a href="https://aaronzick.com/ohio_jackson/" target="_blank">Live</a>)
 
 # Background and Overview
 Phonic the Toad Frog (name pending) is a simple version of Sonic the Hedgehog: an intuitive game that most people would recognize and instinctively. Game play would be moving left and right and jumping. There would be rings that the player can collect. The player must avoid obstacles. Touching an obstacle results in death unless the player has rings, in which case the player loses the rings but may continue playing.
