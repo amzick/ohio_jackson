@@ -2,7 +2,7 @@
 (<a href="https://aaronzick.com/ohio_jackson/" target="_blank">Live</a>)
 
 # Background and Overview
-Ohio Jackson (no affiliation with Indiana Jones) is a simple, nostolgic browser video game built in JavaScript and rendered with the HTML5 Canvas API. I built player movement with event listeners and used requestAnimationFrame to render and animate colorful sprites. I leveraged Object Oriented Programming principles to write DRY, modular code, in order to flexibly and easily populate the game with projectiles and items in response to the player's score. By using sets to keep track of game objects I ensure efficient memory usage by quickly removing out of bounds items, allowing for smooth and fast game performance.
+Ohio Jackson (no affiliation with Indiana Jones) is a simple, nostalgic browser video game built in JavaScript and rendered with the HTML5 Canvas API. I built player movement with event listeners and used requestAnimationFrame to render and animate colorful sprites. I leveraged Object Oriented Programming principles to write DRY, modular code, in order to flexibly and easily populate the game with projectiles and items in response to the player's score. By using sets to keep track of game objects I ensure efficient memory usage by quickly removing out of bounds items, allowing for smooth and fast game performance.
 
 The game was originally inspired by Sonic the Hedgehog - you might recognize the rings. The player must dodge arrows that deplete their health, but there are plenty of healing fruits scattered across the playing field if they get into trouble. After the score gets high enough, a boost item will appear which doubles the player's speed and renders them impervious to damage for a limited time.
 
