@@ -12,18 +12,7 @@ The game was originally inspired by Sonic the Hedgehog - you might recognize the
 - Projectiles, rings, and other itmes will be part of the level.
 - The game ends if the player collides with arrows enough times to delete their health below zero.
 - The player's score will be the amount of rings the player has collected; the difficulty increases in correlation to the score.
-
-## MVPS
-- Basic visuals and interactive interface.
-- Players can move the character.
-- Projectiles damage or kill the character.
-- Either a few pre-built levels of increasing difficulty or an endless projectile generator.
 - Players can pause the game and mute the soundtrack.
-
-# Wireframes
-The app will have a single screen with the gameplay canvas, controls, and links to my LinkedIn, and GitHub.
-![img](https://github.com/amzick/sonic_replica/blob/master/Screen%20Shot%202019-02-05%20at%205.02.41%20PM.png?raw=true)
-
 
 # Architecture and Technologies
 The project will be implemented with:
@@ -43,24 +32,15 @@ Files:
 - game.js: handles game logic
 - audio.js:
 
-
-# Implementation Timeline
-## Day 1
-- Review Canvas
-- Board design?
-
-## Day 2
-- Player design and functionality?
-- Obstacle design and functionality?
-
-## Day 3
-- Obstacle / player collision
-- Game logic
-
-## Days 4 and 5 (weekend)
-- Get through the above because I'm sure I won't get through those in three days
-
-# Bonus Features
-- Audio
-- Additional collectables (shield, timed invincibility, speed boost, ring clumps worth more rings)
-- Additional obstacles, including moving ones
+# Object Oriented Design
+Using classes allows me to easily reuse code for different objects.
+```javascript
+class Collectable extends Moveable {
+  constructor(options) {
+    super(options);
+    this.range = options.range || 25;
+    this.direction = options.direction || "H";
+    this.switchDirection = false;
+  }
+  ...
+ ```
