@@ -35,6 +35,7 @@ Files:
 # Object Oriented Design
 Using classes allows me to easily reuse code for different objects.
 ```javascript
+// collectable.js
 class Collectable extends Moveable {
   constructor(options) {
     super(options);
@@ -42,5 +43,29 @@ class Collectable extends Moveable {
     this.direction = options.direction || "H";
     this.switchDirection = false;
   }
-  ...
+//...
+// coin.js
+class Coin extends Collectable {
+// ...
  ```
+
+# Efficiency
+Using sets instead of arrays to keep track of game objects allows for faster performance and easier to read code.
+```javascript
+// game.js
+constructor(options) {
+    this.canvas = options.canvas;
+    // import default player?
+    // this.player = options.player; 
+    this.coins = options.coins || new Set();
+    this.arrows = options.arrows || new Set();
+    this.fruits = options.fruits || new Set();
+    this.powerUps = options.powerUps || new Set();
+// ...
+// player.js
+//...
+hits(object) {
+    object.remove();
+  }
+// ...
+```
